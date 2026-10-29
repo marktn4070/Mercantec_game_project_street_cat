@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "InQrSER1Xy8=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Yana Pryimachuk\\source\\repos\\Mercantec_game_project_street_cat\\backend\\backend.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Yana Pryimachuk\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.12\\microsoft.aspnetcore.openapi.10.0.12.nupkg.sha512",
+    "C:\\Users\\Yana Pryimachuk\\.nuget\\packages\\microsoft.openapi\\2.12.0\\microsoft.openapi.2.12.0.nupkg.sha512"
+  ],
+  "logs": []
+}
