@@ -1,7 +1,7 @@
-bin /
-obj /
-.vs /
-.vscode /
+bin/
+obj/
+.vs/
+.vscode/
 *.user
 *.suo
 appsettings.json

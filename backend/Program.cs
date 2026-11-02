@@ -1,8 +1,42 @@
+using MQTTnet;
+using MQTTnet.Formatter;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+var factory = new MqttClientFactory();
+using var client = factory.CreateMqttClient();
+
+var options = new MqttClientOptionsBuilder()
+    .WithTcpServer("138.199.155.78", 1883)
+    .WithClientId("csharp-dashboard")
+    .WithProtocolVersion(MqttProtocolVersion.V311)
+    .Build();
+
+client.ApplicationMessageReceivedAsync += e =>
+{
+    var topic = e.ApplicationMessage.Topic;
+    var payload = e.ApplicationMessage.ConvertPayloadToString();
+    Console.WriteLine($"{topic}: {payload}");
+    return Task.CompletedTask;
+};
+
+var connectResult = await client.ConnectAsync(options);
+if (connectResult.ResultCode != MqttClientConnectResultCode.Success)
+{
+    throw new InvalidOperationException($"MQTT-forbindelse afvist ({connectResult.ResultCode}).");
+}
+
+var subscribeOptions = factory.CreateSubscribeOptionsBuilder()
+    .WithTopicFilter("demo/opla/#")
+    .Build();
+
+await client.SubscribeAsync(subscribeOptions);
+Console.WriteLine("Lytter…");
+Console.ReadLine();
 
 var app = builder.Build();
 
@@ -13,29 +47,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
