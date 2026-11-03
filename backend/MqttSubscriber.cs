@@ -36,7 +36,7 @@ public class MqttSubscriber : BackgroundService
         }
 
         var subscribeOptions = factory.CreateSubscribeOptionsBuilder()
-            .WithTopicFilter("YMJ/wildcat/#")
+            .WithTopicFilter("demo/YMJ-Wildcat/#")
             .Build();
 
         await client.SubscribeAsync(subscribeOptions);
