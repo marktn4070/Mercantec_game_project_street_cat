@@ -31,7 +31,7 @@ if (connectResult.ResultCode != MqttClientConnectResultCode.Success)
 }
 
 var subscribeOptions = factory.CreateSubscribeOptionsBuilder()
-    .WithTopicFilter("demo/opla/#")
+    .WithTopicFilter("YMJ/wildcat/#")
     .Build();
 
 await client.SubscribeAsync(subscribeOptions);
