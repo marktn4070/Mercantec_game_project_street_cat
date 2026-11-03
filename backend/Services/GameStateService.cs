@@ -6,99 +6,149 @@ namespace backend.Services
     public class GameStateService
     {
         private readonly Dictionary<string, GameState> _players = new();
+        private readonly object _lock = new();
 
         public GameState StartGame(string playerId)
         {
-            var state = new GameState
+            lock (_lock)
             {
-                PlayerId = playerId,
-                Score = 0,
-                Status = "Running",
-                Action = "None",
-                CurrentBoost = null
-            };
+                var state = new GameState
+                {
+                    PlayerId = playerId,
+                    Score = 0,
+                    Status = "Running",
+                    Action = "None",
+                    CurrentBoost = null
+                    BoostExpiresAt = null
+                };
 
-            _players[playerId] = state;
-            return state;
+                _players[playerId] = state;
+                return CopyState(state);
+            }
         }
 
         public GameState? GetState(string playerId)
         {
-            _players.TryGetValue(playerId, out var state);
-            return state;
+            lock (_lock)
+            {
+                if (!_players.TryGetValue(playerId, out var state))
+                    return null;
+
+                // Check if invisibility has expired
+                if (state.BoostExpiresAt.HasValue &&
+                    DateTime.UtcNow >= state.BoostExpiresAt.Value)
+                {
+                    state.CurrentBoost = null;
+                    state.BoostExpiresAt = null;
+                }
+
+                return CopyState(state);
+            }
         }
 
         public bool SetAction(string playerId, string action)
         {
-            if (!_players.TryGetValue(playerId, out var state))
-                return false;
+            lock (_lock)
+            {
+                if (!_players.TryGetValue(playerId, out var state))
+                    return false;
 
-            if (state.Status != "Running")
-                return false;
+                if (state.Status != "Running")
+                    return false;
+                if (action != "Jump" && action != "Crawl" && action != "None")
+                    return false;
 
-            state.Action = action;
-            return true;
+                state.Action = action;
+                return true;
+            }
         }
 
         public bool UpdateScore(string playerId, int points)
         {
-            if (!_players.TryGetValue(playerId, out var state))
-                return false;
+            lock (_lock)
+            {
+                if (!_players.TryGetValue(playerId, out var state))
+                    return false;
 
-            if (state.Status != "Running")
-                return false;
+                if (state.Status != "Running")
+                    return false;
 
-            state.Score += points;
-            return true;
+                if (points <= 0 || points > 1000)
+                    return false;
+
+                state.Score += points;
+                return true;
+            }
         }
 
         public bool GameOver(string playerId)
         {
-            if (!_players.TryGetValue(playerId, out var state))
-                return false;
+            lock (_lock)
+            {
+                if (!_players.TryGetValue(playerId, out var state))
+                    return false;
 
-            state.Status = "GameOver";
-            state.Action = "None";
-            return true;
+                state.Status = "GameOver";
+                state.Action = "None";
+                return true;
+            }
         }
 
-        // Collect a boost
         public bool CollectBoost(string playerId, string boostName)
         {
-            if (!_players.TryGetValue(playerId, out var state))
-                return false;
+            lock (_lock)
+            {
+                if (!_players.TryGetValue(playerId, out var state))
+                    return false;
 
-            if (state.Status != "Running")
-                return false;
+                if (state.Status != "Running")
+                    return false;
 
-            if (!string.IsNullOrEmpty(state.CurrentBoost))
-                return false;
+                if (!string.IsNullOrEmpty(state.CurrentBoost))
+                    return false;
 
-            if (string.IsNullOrWhiteSpace(boostName))
-                return false;
+                if (boostName != "Invisibility")
+                    return false;
 
-            state.CurrentBoost = boostName;
-            return true;
+                state.CurrentBoost = boostName;
+                state.BoostExpiresAt = DateTime.UtcNow.AddSeconds(5);
+
+                return true;
+            }
         }
 
-        // Use the collected boost
         public bool TryUseBoost(string playerId, out string? boost)
         {
-            boost = null;
+            lock (_lock)
+            {
+                boost = null;
 
-            if (!_players.TryGetValue(playerId, out var state))
-                return false;
+                if (!_players.TryGetValue(playerId, out var state))
+                    return false;
 
-            if (state.Status != "Running")
-                return false;
+                if (state.Status != "Running")
+                    return false;
 
-            if (string.IsNullOrEmpty(state.CurrentBoost))
-                return false;
+                if (string.IsNullOrEmpty(state.CurrentBoost))
+                    return false;
 
-            boost = state.CurrentBoost;
-            state.CurrentBoost = null;
+                boost = state.CurrentBoost;
+                state.CurrentBoost = null;
+                return true;
+            }
+        }
 
-            return true;
+        private GameState CopyState(GameState state)
+        {
+            return new GameState
+            {
+                PlayerId = state.PlayerId,
+                Score = state.Score,
+                Status = state.Status,
+                Action = state.Action,
+                CurrentBoost = state.CurrentBoost
+                BoostExpiresAt = state.BoostExpiresAt
+            };
         }
     }
 }

@@ -12,5 +12,8 @@ namespace backend.Models
         public string Action { get; set; } = "None";
 
         public string? CurrentBoost { get; set; }
+
+        public DateTime? BoostExpiresAt { get; set; }
+
     }
 }

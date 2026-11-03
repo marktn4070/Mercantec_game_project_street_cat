@@ -1,9 +1,17 @@
 ﻿
 using MQTTnet;
 using MQTTnet.Formatter;
+using backend.Services;
 
 public class MqttSubscriber : BackgroundService
 {
+    private readonly GameStateService _gameState;
+
+    public MqttSubscriber(GameStateService gameState)
+    {
+        _gameState = gameState;
+    }
+
     protected override async Task ExecuteAsync(
         CancellationToken stoppingToken)
     {
@@ -21,7 +29,13 @@ public class MqttSubscriber : BackgroundService
             var topic = e.ApplicationMessage.Topic;
             var payload = e.ApplicationMessage.ConvertPayloadToString();
 
-            Console.WriteLine($"{topic}: {payload}");
+            Console.WriteLine("MQTT message received:");
+            Console.WriteLine($"Topic: {topic}");
+            Console.WriteLine($"Payload: {payload}");
+
+            // GameStateService is available here.
+            // We will process the player and action
+            // after confirming the Arduino message format.
 
             return Task.CompletedTask;
         };
