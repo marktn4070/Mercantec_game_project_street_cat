@@ -19,7 +19,6 @@ namespace backend.Services
             };
 
             _players[playerId] = state;
-
             return state;
         }
 
@@ -60,9 +59,46 @@ namespace backend.Services
 
             state.Status = "GameOver";
             state.Action = "None";
+            return true;
+        }
+
+        // Collect a boost
+        public bool CollectBoost(string playerId, string boostName)
+        {
+            if (!_players.TryGetValue(playerId, out var state))
+                return false;
+
+            if (state.Status != "Running")
+                return false;
+
+            if (!string.IsNullOrEmpty(state.CurrentBoost))
+                return false;
+
+            if (string.IsNullOrWhiteSpace(boostName))
+                return false;
+
+            state.CurrentBoost = boostName;
+            return true;
+        }
+
+        // Use the collected boost
+        public bool TryUseBoost(string playerId, out string? boost)
+        {
+            boost = null;
+
+            if (!_players.TryGetValue(playerId, out var state))
+                return false;
+
+            if (state.Status != "Running")
+                return false;
+
+            if (string.IsNullOrEmpty(state.CurrentBoost))
+                return false;
+
+            boost = state.CurrentBoost;
+            state.CurrentBoost = null;
 
             return true;
         }
     }
 }
-

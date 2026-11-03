@@ -1,4 +1,4 @@
-using System;
+
 using Microsoft.AspNetCore.Mvc;
 using backend.Services;
 
@@ -61,8 +61,7 @@ namespace backend.Controllers
 
         // Update score
         [HttpPost("score/{playerId}")]
-        public IActionResult UpdateScore(
-            string playerId, [FromQuery] int points)
+        public IActionResult UpdateScore(string playerId, [FromQuery] int points)
         {
             var success = _gameState.UpdateScore(playerId, points);
 
@@ -82,6 +81,30 @@ namespace backend.Controllers
                 return NotFound("Player not found");
 
             return Ok(_gameState.GetState(playerId));
+        }
+
+        // Collect a boost
+        [HttpPost("boost/collect/{playerId}")]
+        public IActionResult CollectBoost(string playerId, [FromQuery] string boostName)
+        {
+            var success = _gameState.CollectBoost(playerId, boostName);
+
+            if (!success)
+                return BadRequest("Cannot collect boost");
+
+            return Ok(_gameState.GetState(playerId));
+        }
+
+        // Use a boost
+        [HttpPost("boost/use/{playerId}")]
+        public IActionResult UseBoost(string playerId)
+        {
+            var success = _gameState.TryUseBoost(playerId, out var boost);
+
+            if (!success)
+                return BadRequest("No boost available");
+
+            return Ok(new { Message = "Boost used", Boost = boost });
         }
     }
 }
