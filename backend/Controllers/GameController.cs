@@ -104,7 +104,7 @@ namespace backend.Controllers
             if (!success)
                 return BadRequest("No boost available");
 
-            return Ok(new { Message = "Boost used", Boost = boost });
+            return Ok(_gameState.GetState(playerId));
         }
     }
 }

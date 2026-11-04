@@ -18,8 +18,9 @@ namespace backend.Services
                     Score = 0,
                     Status = "Running",
                     Action = "None",
-                    CurrentBoost = null
-                    BoostExpiresAt = null
+                    CurrentBoost = null,
+                    BoostExpiresAt = null,
+                    IsBoostActive = false
                 };
 
                 _players[playerId] = state;
@@ -35,13 +36,12 @@ namespace backend.Services
                     return null;
 
                 // Check if invisibility has expired
-                if (state.BoostExpiresAt.HasValue &&
-                    DateTime.UtcNow >= state.BoostExpiresAt.Value)
+                if (state.BoostExpiresAt.HasValue && DateTime.UtcNow >= state.BoostExpiresAt.Value)
                 {
                     state.CurrentBoost = null;
                     state.BoostExpiresAt = null;
+                    state.IsBoostActive = false;
                 }
-
                 return CopyState(state);
             }
         }
@@ -111,7 +111,7 @@ namespace backend.Services
                     return false;
 
                 state.CurrentBoost = boostName;
-                state.BoostExpiresAt = DateTime.UtcNow.AddSeconds(5);
+                state.BoostExpiresAt = null;
 
                 return true;
             }
@@ -129,15 +129,21 @@ namespace backend.Services
                 if (state.Status != "Running")
                     return false;
 
-                if (string.IsNullOrEmpty(state.CurrentBoost))
+                if (state.CurrentBoost != "Invisibility")
+                    return false;
+
+                if (state.IsBoostActive)
                     return false;
 
                 boost = state.CurrentBoost;
-                state.CurrentBoost = null;
+
+                // Activate invisibility for 5 seconds
+                state.IsBoostActive = true;
+                state.BoostExpiresAt = DateTime.UtcNow.AddSeconds(5);
+
                 return true;
             }
         }
-
         private GameState CopyState(GameState state)
         {
             return new GameState
@@ -146,8 +152,9 @@ namespace backend.Services
                 Score = state.Score,
                 Status = state.Status,
                 Action = state.Action,
-                CurrentBoost = state.CurrentBoost
-                BoostExpiresAt = state.BoostExpiresAt
+                CurrentBoost = state.CurrentBoost,
+                BoostExpiresAt = state.BoostExpiresAt,
+                IsBoostActive = state.IsBoostActive
             };
         }
     }
