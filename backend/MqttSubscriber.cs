@@ -19,7 +19,8 @@ public class MqttSubscriber : BackgroundService
         using var client = factory.CreateMqttClient();
 
         var options = new MqttClientOptionsBuilder()
-            .WithTcpServer("138.199.155.78", 1883)
+            .
+           TcpServer("138.199.155.78", 1883)
             .WithClientId("csharp-dashboard")
             .WithProtocolVersion(MqttProtocolVersion.V311)
             .Build();

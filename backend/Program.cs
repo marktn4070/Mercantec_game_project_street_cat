@@ -7,6 +7,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Frontend", policy =>
+    {
+        policy.WithOrigins("https://mk.trp.solutions")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // Session State
 builder.Services.AddDistributedMemoryCache();
 
@@ -34,6 +44,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("Frontend");
 app.UseSession();
 
 app.MapControllers();
