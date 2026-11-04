@@ -5,16 +5,16 @@ namespace backend.Services
 {
     public class GameStateService
     {
-        private readonly Dictionary<string, GameState> _players = new();
+        private readonly Dictionary<int, GameState> _players = new();
         private readonly object _lock = new();
 
-        public GameState StartGame(string playerId)
+        public GameState StartGame(int playerId)
         {
             lock (_lock)
             {
                 var state = new GameState
                 {
-                    PlayerId = playerId,
+                    Id = playerId,
                     Score = 0,
                     Status = "Running",
                     Action = "None",
@@ -28,7 +28,7 @@ namespace backend.Services
             }
         }
 
-        public GameState? GetState(string playerId)
+        public GameState? GetState(int playerId)
         {
             lock (_lock)
             {
@@ -46,7 +46,7 @@ namespace backend.Services
             }
         }
 
-        public bool SetAction(string playerId, string action)
+        public bool SetAction(int playerId, string action)
         {
             lock (_lock)
             {
@@ -63,7 +63,7 @@ namespace backend.Services
             }
         }
 
-        public bool UpdateScore(string playerId, int points)
+        public bool UpdateScore(int playerId, int points)
         {
             lock (_lock)
             {
@@ -81,7 +81,7 @@ namespace backend.Services
             }
         }
 
-        public bool GameOver(string playerId)
+        public bool GameOver(int playerId)
         {
             lock (_lock)
             {
@@ -94,7 +94,7 @@ namespace backend.Services
             }
         }
 
-        public bool CollectBoost(string playerId, string boostName)
+        public bool CollectBoost(int playerId, string boostName)
         {
             lock (_lock)
             {
@@ -117,7 +117,7 @@ namespace backend.Services
             }
         }
 
-        public bool TryUseBoost(string playerId, out string? boost)
+        public bool TryUseBoost(int playerId, out string? boost)
         {
             lock (_lock)
             {
@@ -148,7 +148,7 @@ namespace backend.Services
         {
             return new GameState
             {
-                PlayerId = state.PlayerId,
+                Id = state.Id,
                 Score = state.Score,
                 Status = state.Status,
                 Action = state.Action,

@@ -12,6 +12,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("Frontend", policy =>
     {
         policy.WithOrigins("https://mk.trp.solutions")
+              .WithOrigins("https://127.0.0.1")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });

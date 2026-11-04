@@ -16,18 +16,18 @@ namespace backend.Controllers
         }
 
         // Start a player's game
-        [HttpPost("start/{playerId}")]
-        public IActionResult StartGame(string playerId)
+        [HttpPost("start/{id}")]
+        public IActionResult StartGame(int id)
         {
-            var state = _gameState.StartGame(playerId);
+            var state = _gameState.StartGame(id);
             return Ok(state);
         }
 
         // Get a player's game state
-        [HttpGet("state/{playerId}")]
-        public IActionResult GetState(string playerId)
+        [HttpGet("state/{id}")]
+        public IActionResult GetState(int id)
         {
-            var state = _gameState.GetState(playerId);
+            var state = _gameState.GetState(id);
 
             if (state == null)
                 return NotFound("Player not found");
@@ -36,10 +36,10 @@ namespace backend.Controllers
         }
 
         // Player jumps
-        [HttpPost("jump/{playerId}")]
-        public IActionResult Jump(string playerId)
+        [HttpPost("jump/{id}")]
+        public IActionResult Jump(int id)
         {
-            var success = _gameState.SetAction(playerId, "Jump");
+            var success = _gameState.SetAction(id, "Jump");
 
             if (!success)
                 return BadRequest("Player is not running");
@@ -48,10 +48,10 @@ namespace backend.Controllers
         }
 
         // Player crawls
-        [HttpPost("crawl/{playerId}")]
-        public IActionResult Crawl(string playerId)
+        [HttpPost("crawl/{id}")]
+        public IActionResult Crawl(int id)
         {
-            var success = _gameState.SetAction(playerId, "Crawl");
+            var success = _gameState.SetAction(id, "Crawl");
 
             if (!success)
                 return BadRequest("Player is not running");
@@ -60,51 +60,51 @@ namespace backend.Controllers
         }
 
         // Update score
-        [HttpPost("score/{playerId}")]
-        public IActionResult UpdateScore(string playerId, [FromQuery] int points)
+        [HttpPost("score/{id}")]
+        public IActionResult UpdateScore(int id, [FromQuery] int points)
         {
-            var success = _gameState.UpdateScore(playerId, points);
+            var success = _gameState.UpdateScore(id, points);
 
             if (!success)
                 return BadRequest("Cannot update score");
 
-            return Ok(_gameState.GetState(playerId));
+            return Ok(_gameState.GetState(id));
         }
 
         // End a player's game
-        [HttpPost("gameover/{playerId}")]
-        public IActionResult GameOver(string playerId)
+        [HttpPost("gameover/{id}")]
+        public IActionResult GameOver(int id)
         {
-            var success = _gameState.GameOver(playerId);
+            var success = _gameState.GameOver(id);
 
             if (!success)
                 return NotFound("Player not found");
 
-            return Ok(_gameState.GetState(playerId));
+            return Ok(_gameState.GetState(id));
         }
 
         // Collect a boost
-        [HttpPost("boost/collect/{playerId}")]
-        public IActionResult CollectBoost(string playerId, [FromQuery] string boostName)
+        [HttpPost("boost/collect/{id}")]
+        public IActionResult CollectBoost(int id, [FromQuery] string boostName)
         {
-            var success = _gameState.CollectBoost(playerId, boostName);
+            var success = _gameState.CollectBoost(id, boostName);
 
             if (!success)
                 return BadRequest("Cannot collect boost");
 
-            return Ok(_gameState.GetState(playerId));
+            return Ok(_gameState.GetState(id));
         }
 
         // Use a boost
-        [HttpPost("boost/use/{playerId}")]
-        public IActionResult UseBoost(string playerId)
+        [HttpPost("boost/use/{id}")]
+        public IActionResult UseBoost(int id)
         {
-            var success = _gameState.TryUseBoost(playerId, out var boost);
+            var success = _gameState.TryUseBoost(id, out var boost);
 
             if (!success)
                 return BadRequest("No boost available");
 
-            return Ok(_gameState.GetState(playerId));
+            return Ok(_gameState.GetState(id));
         }
     }
 }
