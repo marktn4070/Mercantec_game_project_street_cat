@@ -9,7 +9,7 @@
         body {
             margin: 0;
             /* background: #222; */
-            font-family: sans-serif
+            font-family: sans-serif;
         }
         
         .game {
@@ -17,13 +17,13 @@
             max-width: 600px;
             max-height: 450px;
             position: relative;
-            margin: 20px auto
+            margin: 20px auto;
         }
         
         .background {
             /* background: rgb(52, 166, 251); */
             table-layout: fixed;
-            border-spacing: 0
+            border-spacing: 0;
         }
         
         .playing {
@@ -32,36 +32,38 @@
         }
         
         .playing {
-            background-image: url("./assets/ForestBackground1_2.png");
+            background-image: url("./assets/ForestBackground.png");
             background-repeat: no-repeat;
-            background-size: contain, cover;
-            height: 100vw;
+            /* background-size: contain, cover; */
+            background-size: cover;
+            /* height: 100vw; */
         }
         
         .background td {
-            padding: 0
+            padding: 0;
         }
         
         .lava {
-            background: rgb(255, 100, 100)
+            background: rgb(255, 100, 100);
         }
         /* .wall {
-			background: grey
+			background: grey;
 		} */
         
         .actor {
-            position: absolute
+            position: absolute;
         }
         
         .coin {
             background: rgb(241, 229, 89);
-            border-radius: 50%
+            border-radius: 50%;
         }
         
         .wall {
             background-repeat: no-repeat;
             background-size: contain, cover;
             /* padding: 25px; */
+            ;
         }
         
         .wall:nth-of-type(4n-3) {
@@ -105,12 +107,16 @@
             background-position: center;
         }
         
+        .standStill {
+            background-image: url("./assets/Idle.gif");
+        }
+        
         .lost .player {
-            background: rgb(160, 64, 64)
+            background: rgb(160, 64, 64);
         }
         
         .won .player {
-            box-shadow: -4px -7px 8px white, 4px -7px 8px white
+            box-shadow: -4px -7px 8px white, 4px -7px 8px white;
         }
         
         .popup {
@@ -187,23 +193,23 @@
 ................................................................................................
 ................................................................................................
 ................................................................................................
-@..............................................................o.o......o.oo......o.o..........
-##############################################################################################..`;
+@..............................................................o.o......o.oo......o.o...........
+################################################################################################`;
         let simpleLevelPlan2 = `
 ................................................................................................
 ................................................................................................
 ..............................................................................=.........=.......
 @.....................+.....+.....+.............................o.o......o.oo......o.o..........
-##############################################################################################..`;
+################################################################################################`;
         let simpleLevelPlan3 = `
 .......................................................
-..#.................................................#..
-..#..............=.........=.......=.......=........#..
-..#.........o.o......o.oo......o.o.....o.o.....o.o..#..
-..#.@......#####....######....#####...#####...#####.#..
-..#####.............................................#..
-......#+++++++++++++++++++++++++++++++++++++++++++++#..
-......###############################################..`;
+#.....................................................#
+#..................=.........=.......=.......=........#
+#.............o.o......o.oo......o.o.....o.o.....o.o..#
+#.@..........#####....######....#####...#####...#####.#
+#########.............................................#
+....#####+++++++++++++++++++++++++++++++++++++++++++++#
+....###################################################`;
         class Vec {
             constructor(x, y) {
                 this.x = x;
@@ -288,16 +294,20 @@
                 );
             }
 
-
             update(time, state, keys) {
                 let xSpeed = 0;
 
                 // if (keys.ArrowLeft) xSpeed -= 7;
                 if (keys.ArrowRight) this.started = true;
 
-                if (this.started === true) xSpeed += 7;
+                const element = document.querySelector(".player");
 
-
+                if (this.started === true) {
+                    xSpeed += 7;
+                    // element.classList.remove("standStill");
+                } else {
+                    // element.classList.add("standStill");
+                }
 
                 let normalSize = new Vec(.8, 1.5);
                 let crouchSize = new Vec(.8, .75);
@@ -553,28 +563,108 @@
             runGame(levels, DOMDisplay);
         });
 
+        const API_URL = "https://127.0.0.1:7259";
+
+        // api 
+        async function getData() {
+            try {
+                const response = await fetch(
+                    `${API_URL}/api/game/state/1`
+                );
+
+                if (response.status === 400) {
+                    console.error("400: Ugyldig forespørgsel");
+                    return;
+                }
+
+                if (response.status === 404) {
+                    const errorText = await response.text();
+                    console.error(`404: ${errorText}`);
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`HTTP-fejl: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log(data);
+
+            } catch (error) {
+                console.error("Kunne ikke hente data:", error);
+            }
+        }
+
+        // getData();
+        // setInterval(getData, 10000);
 
 
-        // // api 
-        // async function hentData() {
-        //     try {
-        //         const response = await fetch(
-        //             "https://petstore.swagger.io/v2/pet/findByStatus?status=available"
-        //         );
+        // postScore(10);
 
-        //         if (!response.ok) {
-        //             throw new Error(`HTTP-fejl: ${response.status}`);
-        //         }
 
-        //         const data = await response.json();
-        //         console.log(data);
-        //     } catch (error) {
-        //         console.error("Kunne ikke hente data:", error);
-        //     }
-        // }
+        async function postScore(points) {
+            try {
+                const response = await fetch(
+                    `${API_URL}/api/game/score/1?points=${points}`, {
+                        method: "POST"
+                    }
+                );
 
-        // hentData();
-        // setInterval(hentData, 1000);
+                if (!response.ok) {
+                    throw new Error(`HTTP-fejl: ${response.status}`);
+                }
+
+                console.log(`Score opdateret med ${points} point`);
+            } catch (error) {
+                console.error("Kunne ikke opdatere score:", error);
+            }
+        }
+
+
+
+        let gotBoost = false;
+
+
+        postBoostName("Invisibility");
+
+        async function postBoostName(boostName) {
+            try {
+                const response = await fetch(
+                    `${API_URL}/api/game/boost/collect/1?boostName=${boostName}`, {
+                        method: "POST"
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(`HTTP-fejl: ${response.status}`);
+                }
+
+                console.log(`boost opdateret med ${boostName}`);
+                gotBoost = true;
+            } catch (error) {
+                console.error("Kunne ikke opdatere boost:", error);
+            }
+        }
+
+        if (gotBoost === true) postBoostUse();
+
+        async function postBoostUse() {
+            try {
+                const response = await fetch(
+                    `${API_URL}/api/game/boost/use/1`, {
+                        method: "POST"
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(`HTTP-fejl: ${response.status}`);
+                }
+
+                console.log(`boost use opdateret`);
+            } catch (error) {
+                console.error("Kunne ikke opdatere boost use:", error);
+            }
+        }
     </script>
 </body>
 
