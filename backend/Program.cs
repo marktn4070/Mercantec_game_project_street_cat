@@ -12,7 +12,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("Frontend", policy =>
     {
         policy.WithOrigins("https://mk.trp.solutions")
-              .WithOrigins("https://127.0.0.1")
+              .WithOrigins("http://127.0.0.1")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -37,6 +37,15 @@ builder.Services.AddHostedService<MqttSubscriber>();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+// Test player (only in development. Delete later)
+//if (app.Environment.IsDevelopment())
+//{
+//    var gameState = app.Services
+//        .GetRequiredService<GameStateService>();
+
+//    gameState.StartGame(1);
+//}
 
 // HTTP pipeline
 if (app.Environment.IsDevelopment())

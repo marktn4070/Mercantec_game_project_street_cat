@@ -19,7 +19,6 @@ namespace backend.Services
                     Status = "Running",
                     Action = "None",
                     CurrentBoost = null,
-                    BoostExpiresAt = null,
                     IsBoostActive = false
                 };
 
@@ -35,13 +34,6 @@ namespace backend.Services
                 if (!_players.TryGetValue(playerId, out var state))
                     return null;
 
-                // Check if invisibility has expired
-                if (state.BoostExpiresAt.HasValue && DateTime.UtcNow >= state.BoostExpiresAt.Value)
-                {
-                    state.CurrentBoost = null;
-                    state.BoostExpiresAt = null;
-                    state.IsBoostActive = false;
-                }
                 return CopyState(state);
             }
         }
@@ -111,7 +103,6 @@ namespace backend.Services
                     return false;
 
                 state.CurrentBoost = boostName;
-                state.BoostExpiresAt = null;
 
                 return true;
             }
@@ -137,9 +128,8 @@ namespace backend.Services
 
                 boost = state.CurrentBoost;
 
-                // Activate invisibility for 5 seconds
+                // Activate invisibility
                 state.IsBoostActive = true;
-                state.BoostExpiresAt = DateTime.UtcNow.AddSeconds(5);
 
                 return true;
             }
@@ -153,7 +143,6 @@ namespace backend.Services
                 Status = state.Status,
                 Action = state.Action,
                 CurrentBoost = state.CurrentBoost,
-                BoostExpiresAt = state.BoostExpiresAt,
                 IsBoostActive = state.IsBoostActive
             };
         }
