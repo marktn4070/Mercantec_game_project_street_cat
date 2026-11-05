@@ -148,6 +148,45 @@ namespace backend.Services
                 return true;
             }
         }
+
+        public void InitializePlayers()
+        {
+            lock (_lock)
+            {
+                if (!_players.ContainsKey(1))
+                {
+                    _players[1] = new GameState
+                    {
+                        Id = 1,
+                        Status = "Idle"
+                    };
+                }
+
+                if (!_players.ContainsKey(2))
+                {
+                    _players[2] = new GameState
+                    {
+                        Id = 2,
+                        Status = "Idle"
+                    };
+                }
+            }
+        }
+
+        public List<GameState> GetAllStates()
+        {
+            lock (_lock)
+            {
+                var result = new List<GameState>();
+
+                foreach (var state in _players.Values)
+                {
+                    result.Add(CopyState(state));
+                }
+
+                return result;
+            }
+        }
         private GameState CopyState(GameState state)
         {
             return new GameState

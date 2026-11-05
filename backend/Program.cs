@@ -37,17 +37,10 @@ builder.Services.AddHostedService<MqttSubscriber>();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+var gameState = app.Services.GetRequiredService<GameStateService>();
+gameState.InitializePlayers();
 
-// Test player (only in development. Delete later)
-//if (app.Environment.IsDevelopment())
-//{
-//    var gameState = app.Services
-//        .GetRequiredService<GameStateService>();
 
-//    gameState.StartGame(1);
-//}
-
-// HTTP pipeline
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

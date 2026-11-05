@@ -15,7 +15,6 @@ namespace backend.Controllers
             _gameState = gameState;
         }
 
-        // Start a player's game
         [HttpPost("start/{id}")]
         public IActionResult StartGame(int id)
         {
@@ -23,7 +22,6 @@ namespace backend.Controllers
             return Ok(state);
         }
 
-        // Get a player's game state
         [HttpGet("state/{id}")]
         public IActionResult GetState(int id)
         {
@@ -35,7 +33,6 @@ namespace backend.Controllers
             return Ok(state);
         }
 
-        // Player jumps
         [HttpPost("jump/{id}")]
         public IActionResult Jump(int id)
         {
@@ -47,7 +44,6 @@ namespace backend.Controllers
             return Ok("Jump accepted");
         }
 
-        // Player crawls
         [HttpPost("crawl/{id}")]
         public IActionResult Crawl(int id)
         {
@@ -59,7 +55,6 @@ namespace backend.Controllers
             return Ok("Crawl accepted");
         }
 
-        // Update score
         [HttpPost("score/{id}")]
         public IActionResult UpdateScore(int id, [FromQuery] int points)
         {
@@ -71,7 +66,6 @@ namespace backend.Controllers
             return Ok(_gameState.GetState(id));
         }
 
-        // End a player's game
         [HttpPost("gameover/{id}")]
         public IActionResult GameOver(int id)
         {
@@ -83,7 +77,6 @@ namespace backend.Controllers
             return Ok(_gameState.GetState(id));
         }
 
-        // Collect a boost
         [HttpPost("boost/collect/{id}")]
         public IActionResult CollectBoost(int id, [FromQuery] string boostName)
         {
@@ -95,7 +88,6 @@ namespace backend.Controllers
             return Ok(_gameState.GetState(id));
         }
 
-        // Use a boost
         [HttpPost("boost/use/{id}")]
         public IActionResult UseBoost(int id)
         {
@@ -105,6 +97,13 @@ namespace backend.Controllers
                 return BadRequest("No boost available");
 
             return Ok(_gameState.GetState(id));
+        }
+
+        // Get all players
+        [HttpGet("players")]
+        public IActionResult GetAllPlayers()
+        {
+            return Ok(_gameState.GetAllStates());
         }
     }
 }
