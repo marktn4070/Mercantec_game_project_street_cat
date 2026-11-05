@@ -5,7 +5,7 @@ namespace backend.Models
     {
         public int Id { get; set; }
         public string PlayerName {get; set;} = "";
-        public int Score { get; set; } = 0;
+        // public int Score { get; set; } = 0;
         public string Status { get; set; } = "Idle";
         public string Action { get; set; } = "None";
         public string? CurrentBoost { get; set; }

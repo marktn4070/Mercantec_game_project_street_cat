@@ -8,21 +8,15 @@ namespace backend.Services
         private readonly Dictionary<int, GameState> _players = new();
         private readonly object _lock = new();
 
-        public GameState StartGame(int playerId)
+        // Should be removed, only for testing
+        // Arduino connects players with game pin.
+        public GameState PostPlayersToGame(int playerId)
         {
             lock (_lock)
             {
-                int savedScore = 0;
-
-                if (_players.TryGetValue(playerId, out var existingPlayer))
-                {
-                    savedScore = existingPlayer.Score;
-                }
-
                 var state = new GameState
                 {
                     Id = playerId,
-                    Score = savedScore,
                     Status = "Running",
                     Action = "None",
                     CurrentBoost = null,
@@ -36,7 +30,7 @@ namespace backend.Services
                 return CopyState(state);
             }
         }
-        public GameState? GetState(int playerId)
+        public GameState? GetPlayerState(int playerId)
         {
             lock (_lock)
             {
@@ -67,7 +61,7 @@ namespace backend.Services
             }
         }
 
-        public bool SetAction(int playerId, string action)
+        public bool PostAction(int playerId, string action)
         {
             lock (_lock)
             {
@@ -84,34 +78,43 @@ namespace backend.Services
             }
         }
 
-        public bool UpdateScore(int playerId, int points)
+        // public bool UpdateScore(int playerId, int points)
+        // {
+        //     lock (_lock)
+        //     {
+        //         if (!_players.TryGetValue(playerId, out var state))
+        //             return false;
+
+        //         if (state.Status != "Running")
+        //             return false;
+
+        //         if (points <= 0 || points > 1000)
+        //             return false;
+
+        //         state.Score += points;
+        //         return true;
+        //     }
+        // }
+
+        public GameState RestartGame(int playerId)
         {
             lock (_lock)
             {
                 if (!_players.TryGetValue(playerId, out var state))
-                    return false;
+                    return null;
 
-                if (state.Status != "Running")
-                    return false;
+                new GameState
+                {
+                    Id = playerId,
+                    Status = state.Status = "Idle",
+                    Action = state.Action = "None",
+                    CurrentBoost = null,
+                    //BoostExpiresAt = null,
+                    IsBoostActive = false
+                };
 
-                if (points <= 0 || points > 1000)
-                    return false;
-
-                state.Score += points;
-                return true;
-            }
-        }
-
-        public bool GameOver(int playerId)
-        {
-            lock (_lock)
-            {
-                if (!_players.TryGetValue(playerId, out var state))
-                    return false;
-
-                state.Status = "GameOver";
-                state.Action = "None";
-                return true;
+                _players[playerId] = state;
+                return CopyState(state);
             }
         }
 
@@ -190,7 +193,7 @@ namespace backend.Services
             }
         }
 
-        public List<GameState> GetAllStates()
+        public List<GameState> GetAllPlayerStates()
         {
             lock (_lock)
             {
@@ -209,7 +212,6 @@ namespace backend.Services
             return new GameState
             {
                 Id = state.Id,
-                Score = state.Score,
                 Status = state.Status,
                 Action = state.Action,
                 CurrentBoost = state.CurrentBoost,

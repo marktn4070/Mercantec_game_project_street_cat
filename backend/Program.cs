@@ -38,8 +38,6 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 var gameState = app.Services.GetRequiredService<GameStateService>();
-gameState.InitializePlayers();
-
 
 if (app.Environment.IsDevelopment())
 {
