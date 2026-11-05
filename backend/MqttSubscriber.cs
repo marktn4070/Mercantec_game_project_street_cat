@@ -2,10 +2,13 @@
 using MQTTnet;
 using MQTTnet.Formatter;
 using backend.Services;
+using System.Text.Json;
+using backend.Models;
 
 public class MqttSubscriber : BackgroundService
 {
     private readonly GameStateService _gameState;
+    private int _nextPlayerId = 1;
 
     public MqttSubscriber(GameStateService gameState)
     {
@@ -20,26 +23,56 @@ public class MqttSubscriber : BackgroundService
 
         var options = new MqttClientOptionsBuilder()
             .WithTcpServer("138.199.155.78", 1883)
-            .WithClientId("csharp-dashboard")
+            .WithClientId($"backend-{Guid.NewGuid()}")
             .WithProtocolVersion(MqttProtocolVersion.V311)
             .Build();
 
-        client.ApplicationMessageReceivedAsync += e =>
+        client.ApplicationMessageReceivedAsync += async e =>
         {
+            Console.WriteLine("EVENT FIRED");
+
             var topic = e.ApplicationMessage.Topic;
             var payload = e.ApplicationMessage.ConvertPayloadToString();
 
-            Console.WriteLine("MQTT message received:");
             Console.WriteLine($"Topic: {topic}");
             Console.WriteLine($"Payload: {payload}");
 
-            // GameStateService is available here.
-            // We will process the player and action
-            // after confirming the Arduino message format.
+            if (topic == "demo/YMJ-Wildcat/join")
+            {
+                var request = JsonSerializer.Deserialize<JoinRequest>(payload, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
 
+                var deviceId = request!.DeviceId;
+                var pin = request.Pin;
+                var assignedPlayerId = $"player{_nextPlayerId++}";
+                
+                await client.PublishAsync(new MqttApplicationMessageBuilder()
+                    .WithTopic($"demo/YMJ-Wildcat/{deviceId}/assigned")
+                    .WithPayload(assignedPlayerId)
+                    .Build(), stoppingToken);
+                Console.WriteLine($"Assigned {assignedPlayerId} to {deviceId}");
+            }
+        };
+        client.ConnectedAsync += e =>
+        {
+            Console.WriteLine("MQTT CONNECTED");
             return Task.CompletedTask;
         };
 
+        client.DisconnectedAsync += e =>
+        {
+            Console.WriteLine("MQTT DISCONNECTED");
+            Console.WriteLine($"Reason: {e.Reason}");
+
+            if (e.Exception != null)
+            {
+                Console.WriteLine($"Exception: {e.Exception.Message}");
+            }
+
+            return Task.CompletedTask;
+        };
         var connectResult = await client.ConnectAsync(options);
 
         if (connectResult.ResultCode !=
@@ -53,7 +86,12 @@ public class MqttSubscriber : BackgroundService
             .WithTopicFilter("demo/YMJ-Wildcat/#")
             .Build();
 
-        await client.SubscribeAsync(subscribeOptions);
+        var result = await client.SubscribeAsync(subscribeOptions);
+        foreach (var item in result.Items)
+        {
+            Console.WriteLine(
+                $"Subscribed to {item.TopicFilter.Topic}. Result={item.ResultCode}");
+        }
 
         Console.WriteLine("MQTT listening...");
 
