@@ -99,6 +99,18 @@ namespace backend.Controllers
             return Ok(_gameState.GetState(id));
         }
 
+
+        // Set map ready
+        [HttpPost("mapready/{id}")]
+        public IActionResult SetMapReady(int id, [FromQuery] bool ready)
+        {
+            var success = _gameState.SetMapReady(id, ready);
+
+            if (!success)
+                return NotFound("Player not found");
+
+            return Ok(_gameState.GetState(id));
+        }
         // Get all players
         [HttpGet("players")]
         public IActionResult GetAllPlayers()

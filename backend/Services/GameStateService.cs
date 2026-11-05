@@ -47,6 +47,18 @@ namespace backend.Services
             }
         }
 
+        public bool SetMapReady(int playerId, bool ready)
+        {
+            lock (_lock)
+            {
+                if (!_players.TryGetValue(playerId, out var state))
+                    return false;
+
+                state.MapReady = ready;
+                return true;
+            }
+        }
+
         public bool SetAction(int playerId, string action)
         {
             lock (_lock)
@@ -197,7 +209,8 @@ namespace backend.Services
                 Action = state.Action,
                 CurrentBoost = state.CurrentBoost,
                 //BoostExpiresAt = state.BoostExpiresAt,
-                IsBoostActive = state.IsBoostActive
+                IsBoostActive = state.IsBoostActive,
+                MapReady = state.MapReady,
             };
         }
     }
