@@ -102,9 +102,9 @@ namespace backend.Controllers
 
         // Set map ready
         [HttpPost("mapready/{id}")]
-        public IActionResult SetMapReady(int id, [FromQuery] bool ready)
+        public IActionResult PostMapReady(int id, [FromQuery] bool ready)
         {
-            var success = _gameState.SetMapReady(id, ready);
+            var success = _gameState.PostMapReady(id, ready);
 
             if (!success)
                 return NotFound("Player not found");

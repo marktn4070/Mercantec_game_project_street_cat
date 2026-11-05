@@ -49,7 +49,7 @@ namespace backend.Services
             }
         }
 
-        public bool SetMapReady(int playerId, bool ready)
+        public bool PostMapReady(int playerId, bool ready)
         {
             lock (_lock)
             {
