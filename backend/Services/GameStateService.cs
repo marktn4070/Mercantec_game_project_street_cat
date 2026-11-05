@@ -12,22 +12,30 @@ namespace backend.Services
         {
             lock (_lock)
             {
+                int savedScore = 0;
+
+                if (_players.TryGetValue(playerId, out var existingPlayer))
+                {
+                    savedScore = existingPlayer.Score;
+                }
+
                 var state = new GameState
                 {
                     Id = playerId,
-                    Score = 0,
+                    Score = savedScore,
                     Status = "Running",
                     Action = "None",
                     CurrentBoost = null,
-                    //BoostExpiresAt = null,
-                    IsBoostActive = false
+                    BoostExpiresAt = null,
+                    IsBoostActive = false,
+                    MapReady = false
                 };
 
                 _players[playerId] = state;
+
                 return CopyState(state);
             }
         }
-
         public GameState? GetState(int playerId)
         {
             lock (_lock)
@@ -149,9 +157,6 @@ namespace backend.Services
                     return false;
 
                 boost = state.CurrentBoost;
-
-                // Activate invisibility
-                state.IsBoostActive = true;
 
                 // Activate invisibility for 5 seconds
                 state.IsBoostActive = true;
