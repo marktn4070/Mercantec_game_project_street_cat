@@ -9,6 +9,7 @@ namespace backend.Models
         public string Status { get; set; } = "Idle";
         public string Action { get; set; } = "None";
         public string? CurrentBoost { get; set; }
+        public DateTime? BoostExpiresAt { get; set; }
         public bool IsBoostActive { get; set; } = false;
     }
 }
