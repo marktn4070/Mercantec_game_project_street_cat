@@ -12,7 +12,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("Frontend", policy =>
     {
         policy.WithOrigins("https://mk.trp.solutions")
-              .WithOrigins("https://127.0.0.1")
+              .WithOrigins("http://127.0.0.1")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -38,7 +38,6 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// HTTP pipeline
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
