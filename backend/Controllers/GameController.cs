@@ -16,14 +16,14 @@ namespace backend.Controllers
         }
 
         [HttpPost("postplayers/{id}")]
-        public IActionResult PostPlayersToGame(int id)
+        public IActionResult PostPlayersToGame(string id)
         {
             var state = _gameState.PostPlayersToGame(id);
             return Ok(state);
         }
 
         [HttpGet("playerstate/{id}")]
-        public IActionResult GetPlayerState(int id)
+        public IActionResult GetPlayerState(string id)
         {
             var state = _gameState.GetPlayerState(id);
 
@@ -34,7 +34,7 @@ namespace backend.Controllers
         }
 
         [HttpPost("jump/{id}")]
-        public IActionResult Jump(int id)
+        public IActionResult Jump(string id)
         {
             var success = _gameState.PostAction(id, "Jump");
 
@@ -45,7 +45,7 @@ namespace backend.Controllers
         }
 
         [HttpPost("crawl/{id}")]
-        public IActionResult Crawl(int id)
+        public IActionResult Crawl(string id)
         {
             var success = _gameState.PostAction(id, "Crawl");
 
@@ -67,7 +67,7 @@ namespace backend.Controllers
         // }
 
         [HttpPost("restartGame/{id}")]
-        public IActionResult RestartGame(int id)
+        public IActionResult RestartGame(string id)
         {
             var success = _gameState.RestartGame(id);
 
@@ -78,7 +78,7 @@ namespace backend.Controllers
         }
 
         [HttpPost("boost/collect/{id}")]
-        public IActionResult CollectBoost(int id, [FromQuery] string boostName)
+        public IActionResult CollectBoost(string id, [FromQuery] string boostName)
         {
             var success = _gameState.CollectBoost(id, boostName);
 
@@ -89,7 +89,7 @@ namespace backend.Controllers
         }
 
         [HttpPost("boost/use/{id}")]
-        public IActionResult UseBoost(int id)
+        public IActionResult UseBoost(string id)
         {
             var success = _gameState.TryUseBoost(id, out var boost);
 
@@ -101,22 +101,45 @@ namespace backend.Controllers
 
 
         // Set map ready
-        [HttpPost("mapready/{id}")]
-        public IActionResult PostMapReady(int id, [FromQuery] bool ready)
-        {
-            var success = _gameState.PostMapReady(id, ready);
+        // [HttpPost("mapready/{id}")]
+        // public IActionResult PostMapReady(string id, [FromQuery] bool ready)
+        // {
+        //     var success = _gameState.PostMapReady(id, ready);
 
-            if (!success)
-                return NotFound("Player not found");
+        //     if (!success)
+        //         return NotFound("Player not found");
 
-            return Ok(_gameState.GetPlayerState(id));
-        }
+        //     return Ok(_gameState.GetPlayerState(id));
+        // }
 
         // Get all players
         [HttpGet("players")]
         public IActionResult GetAllPlayers()
         {
             return Ok(_gameState.GetAllPlayerStates());
+        }
+
+        [HttpPost("createlobby")]
+        public IActionResult CreateLobby([FromQuery]int gameMode)
+        {
+            if(gameMode != 1 && gameMode != 2)
+                    return BadRequest("Wrong gamemode");
+            
+            var lobby = _gameState.PostCreateLobby(gameMode);
+            if(lobby == null)
+                return BadRequest("Lobby could not be created");
+
+            return Ok(lobby);
+        }
+
+        [HttpGet("lobby/{pin}")]
+        public IActionResult GetLobby(string pin)
+        {
+            var lobby = _gameState.GetGameLobby(pin);
+            if(lobby == null)
+                return NotFound();
+
+            return Ok(lobby);
         }
     }
 }

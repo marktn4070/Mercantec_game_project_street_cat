@@ -8,7 +8,6 @@ using backend.Models;
 public class MqttSubscriber : BackgroundService
 {
     private readonly GameStateService _gameState;
-    private int _nextPlayerId = 1;
 
     public MqttSubscriber(GameStateService gameState)
     {
@@ -46,7 +45,41 @@ public class MqttSubscriber : BackgroundService
 
                 var deviceId = request!.DeviceId;
                 var pin = request.Pin;
-                var assignedPlayerId = $"player{_nextPlayerId++}";
+
+                Console.WriteLine($"Looking for lobby: {request.Pin}");
+                var lobby = _gameState.GetGameLobby(request.Pin);
+                if (lobby == null)
+                {
+                    Console.WriteLine($"Lobby {request.Pin} not found");
+                    return;
+                }
+                Console.WriteLine($"Lobby {request.Pin} FOUND");
+
+                // if (lobby.Players.Count >= 2)
+                // {
+                //     Console.WriteLine("Lobby is full");
+                //     return;
+                // }
+
+                var existingPlayer = lobby.Players.FirstOrDefault(p => p.DeviceId == deviceId);
+                if (existingPlayer != null)
+                {
+                    await client.PublishAsync(
+                        new MqttApplicationMessageBuilder()
+                            .WithTopic($"demo/YMJ-Wildcat/{deviceId}/assigned")
+                            .WithPayload(existingPlayer.PlayerId)
+                            .Build(),
+                        stoppingToken);
+
+                    return;
+                }
+
+                var assignedPlayerId = $"player{lobby.Players.Count + 1}";
+                lobby.Players.Add(new LobbyPlayer
+                {
+                    DeviceId = deviceId,
+                    PlayerId = assignedPlayerId
+                });
                 
                 await client.PublishAsync(new MqttApplicationMessageBuilder()
                     .WithTopic($"demo/YMJ-Wildcat/{deviceId}/assigned")
