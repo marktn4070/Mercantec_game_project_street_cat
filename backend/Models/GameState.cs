@@ -4,7 +4,7 @@ namespace backend.Models
     public class GameState
     {
         public int Id { get; set; }
-        public string PlayerName {get; set;} = "";
+        public string PlayerName {get; set;} = "delete this name later";
         // public int Score { get; set; } = 0;
         public string Status { get; set; } = "Idle";
         public string Action { get; set; } = "None";

@@ -41,7 +41,7 @@ namespace backend.Services
                 if (state.BoostExpiresAt.HasValue && DateTime.UtcNow >= state.BoostExpiresAt.Value)
                 {
                     state.CurrentBoost = null;
-                    //state.BoostExpiresAt = null;
+                    state.BoostExpiresAt = null;
                     state.IsBoostActive = false;
                 }
 
@@ -135,7 +135,7 @@ namespace backend.Services
                     return false;
 
                 state.CurrentBoost = boostName;
-                //state.BoostExpiresAt = null;
+                state.BoostExpiresAt = null;
 
                 return true;
             }
@@ -215,7 +215,7 @@ namespace backend.Services
                 Status = state.Status,
                 Action = state.Action,
                 CurrentBoost = state.CurrentBoost,
-                //BoostExpiresAt = state.BoostExpiresAt,
+                BoostExpiresAt = state.BoostExpiresAt,
                 IsBoostActive = state.IsBoostActive,
                 MapReady = state.MapReady,
             };
