@@ -37,7 +37,6 @@ builder.Services.AddHostedService<MqttSubscriber>();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
-var gameState = app.Services.GetRequiredService<GameStateService>();
 
 if (app.Environment.IsDevelopment())
 {
