@@ -1,28 +1,34 @@
 ﻿
+using System.Net.NetworkInformation;
+using System.Runtime.CompilerServices;
 using backend.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace backend.Services
 {
     public class GameStateService
     {
-        private readonly Dictionary<int, GameState> _players = new();
+        private readonly Dictionary<string, GameState> _players = new();
+
+        //Store lobbies permantely
+        private readonly List<GameLobby> _lobbies = new List<GameLobby>();
         private readonly object _lock = new();
 
         // Should be removed, only for testing
         // Arduino connects players with game pin.
-        public GameState PostPlayersToGame(int playerId)
+        public GameState PostPlayersToGame(string playerId)
         {
             lock (_lock)
             {
                 var state = new GameState
                 {
-                    Id = playerId,
+                    PlayerId = playerId,
                     Status = "Running",
                     Action = "None",
                     CurrentBoost = null,
                     BoostExpiresAt = null,
                     IsBoostActive = false,
-                    MapReady = false
+                    // MapReady = false
                 };
 
                 _players[playerId] = state;
@@ -30,7 +36,7 @@ namespace backend.Services
                 return CopyState(state);
             }
         }
-        public GameState? GetPlayerState(int playerId)
+        public GameState? GetPlayerState(string playerId)
         {
             lock (_lock)
             {
@@ -49,19 +55,19 @@ namespace backend.Services
             }
         }
 
-        public bool PostMapReady(int playerId, bool ready)
-        {
-            lock (_lock)
-            {
-                if (!_players.TryGetValue(playerId, out var state))
-                    return false;
+        // public bool PostMapReady(string playerId, bool ready)
+        // {
+        //     lock (_lock)
+        //     {
+        //         if (!_players.TryGetValue(playerId, out var state))
+        //             return false;
 
-                state.MapReady = ready;
-                return true;
-            }
-        }
+        //         state.MapReady = ready;
+        //         return true;
+        //     }
+        // }
 
-        public bool PostAction(int playerId, string action)
+        public bool PostAction(string playerId, string action)
         {
             lock (_lock)
             {
@@ -96,7 +102,7 @@ namespace backend.Services
         //     }
         // }
 
-        public GameState RestartGame(int playerId)
+        public GameState RestartGame(string playerId)
         {
             lock (_lock)
             {
@@ -105,7 +111,7 @@ namespace backend.Services
 
                 new GameState
                 {
-                    Id = playerId,
+                    PlayerId = playerId,
                     Status = state.Status = "Idle",
                     Action = state.Action = "None",
                     CurrentBoost = null,
@@ -118,7 +124,7 @@ namespace backend.Services
             }
         }
 
-        public bool CollectBoost(int playerId, string boostName)
+        public bool CollectBoost(string playerId, string boostName)
         {
             lock (_lock)
             {
@@ -141,7 +147,7 @@ namespace backend.Services
             }
         }
 
-        public bool TryUseBoost(int playerId, out string? boost)
+        public bool TryUseBoost(string playerId, out string? boost)
         {
             lock (_lock)
             {
@@ -169,29 +175,29 @@ namespace backend.Services
             }
         }
 
-        public void InitializePlayers()
-        {
-            lock (_lock)
-            {
-                if (!_players.ContainsKey(1))
-                {
-                    _players[1] = new GameState
-                    {
-                        Id = 1,
-                        Status = "Idle"
-                    };
-                }
+        // public void InitializePlayers()
+        // {
+        //     lock (_lock)
+        //     {
+        //         if (!_players.ContainsKey($"player{"1" || "2"}"))
+        //         {
+        //             _players[1] = new GameState
+        //             {
+        //                 PlayerId = 1,
+        //                 Status = "Idle"
+        //             };
+        //         }
 
-                if (!_players.ContainsKey(2))
-                {
-                    _players[2] = new GameState
-                    {
-                        Id = 2,
-                        Status = "Idle"
-                    };
-                }
-            }
-        }
+        //         if (!_players.ContainsKey(2))
+        //         {
+        //             _players[2] = new GameState
+        //             {
+        //                 PlayerId = 2,
+        //                 Status = "Idle"
+        //             };
+        //         }
+        //     }
+        // }
 
         public List<GameState> GetAllPlayerStates()
         {
@@ -207,17 +213,57 @@ namespace backend.Services
                 return result;
             }
         }
+
+        public string PostCreateLobby(int gameMode)
+        {
+            lock (_lock)
+            {                
+                var pin = "";
+                if (gameMode == 1)
+                {
+                    //var pin = Random.Shared.Next(1000, 9999).ToString();
+                    pin = "1234";
+                    var lobby = new GameLobby
+                    {
+                        Pin = pin
+                    };
+
+                    _lobbies.Add(lobby);
+                }
+                else if (gameMode == 2)
+                {
+                    //var pin = Random.Shared.Next(1000, 9999).ToString();
+                    pin = "5678";
+                    var lobby = new GameLobby
+                    {
+                        Pin = pin
+                    };
+
+                    _lobbies.Add(lobby);
+                }
+                return pin;
+            }
+        }
+
+        public GameLobby? GetGameLobby(string pin)
+        {
+            lock (_lock)
+            {
+                return _lobbies.FirstOrDefault(x => x.Pin == pin);
+            }
+        }
+
         private GameState CopyState(GameState state)
         {
             return new GameState
             {
-                Id = state.Id,
+                PlayerId = state.PlayerId,
                 Status = state.Status,
                 Action = state.Action,
                 CurrentBoost = state.CurrentBoost,
                 BoostExpiresAt = state.BoostExpiresAt,
                 IsBoostActive = state.IsBoostActive,
-                MapReady = state.MapReady,
+                // MapReady = state.MapReady,
             };
         }
     }
