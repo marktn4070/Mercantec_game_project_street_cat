@@ -54,6 +54,59 @@ public class MqttSubscriber : BackgroundService
                     .Build(), stoppingToken);
                 Console.WriteLine($"Assigned {assignedPlayerId} to {deviceId}");
             }
+
+
+            else if (topic.StartsWith("demo/YMJ-Wildcat/game/"))
+            {
+                string[] parts = topic.Split('/');
+
+                // Expected:
+                // demo/YMJ-Wildcat/game/player1/input/move
+
+                if (parts.Length != 7 || parts[5] != "input")
+                    return;
+
+                string pin = parts[3];
+                string playerText = parts[4];
+
+                // Convert player1 to 1, player2 to 2
+                if (playerText.StartsWith("player",
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    playerText = playerText.Substring(6);
+                }
+
+                if (!int.TryParse(playerText, out int playerId))
+                {
+                    Console.WriteLine("Invalid player ID");
+                    return;
+                }
+
+                string inputType = parts[6];
+
+                if (inputType == "move")
+                {
+                    string action = payload.Trim();
+
+                    bool success = _gameState.PostAction(playerId, action);
+
+                    Console.WriteLine(success
+                        ? $"Player {playerId}: action saved: {action}"
+                        : $"Player {playerId}: action rejected: {action}");
+                }
+                else if (inputType == "Boost")
+                {
+                    if (bool.TryParse(payload.Trim(), out bool pressed) && pressed)
+                    {
+                        bool success = _gameState.TryUseBoost(playerId, out var boost);
+
+                        Console.WriteLine(success
+                            ? $"Player {playerId}: boost activated: {boost}"
+                            : $"Player {playerId}: boost could not be activated");
+                    }
+                }
+            }
+
         };
         client.ConnectedAsync += e =>
         {

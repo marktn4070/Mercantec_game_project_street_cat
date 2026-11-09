@@ -103,17 +103,13 @@ namespace backend.Services
                 if (!_players.TryGetValue(playerId, out var state))
                     return null;
 
-                new GameState
-                {
-                    Id = playerId,
-                    Status = state.Status = "Idle",
-                    Action = state.Action = "None",
-                    CurrentBoost = null,
-                    //BoostExpiresAt = null,
-                    IsBoostActive = false
-                };
+                state.Status = "Idle";
+                state.Action = "None";
+                state.CurrentBoost = null;
+                state.BoostExpiresAt = null;
+                state.IsBoostActive = false;
+                state.MapReady = false;
 
-                _players[playerId] = state;
                 return CopyState(state);
             }
         }
