@@ -55,18 +55,6 @@ namespace backend.Services
             }
         }
 
-        // public bool PostMapReady(string playerId, bool ready)
-        // {
-        //     lock (_lock)
-        //     {
-        //         if (!_players.TryGetValue(playerId, out var state))
-        //             return false;
-
-        //         state.MapReady = ready;
-        //         return true;
-        //     }
-        // }
-
         public bool PostAction(string playerId, string action)
         {
             lock (_lock)
@@ -81,46 +69,6 @@ namespace backend.Services
 
                 state.Action = action;
                 return true;
-            }
-        }
-
-        // public bool UpdateScore(int playerId, int points)
-        // {
-        //     lock (_lock)
-        //     {
-        //         if (!_players.TryGetValue(playerId, out var state))
-        //             return false;
-
-        //         if (state.Status != "Running")
-        //             return false;
-
-        //         if (points <= 0 || points > 1000)
-        //             return false;
-
-        //         state.Score += points;
-        //         return true;
-        //     }
-        // }
-
-        public GameState RestartGame(string playerId)
-        {
-            lock (_lock)
-            {
-                if (!_players.TryGetValue(playerId, out var state))
-                    return null;
-
-                new GameState
-                {
-                    PlayerId = playerId,
-                    Status = state.Status = "Idle",
-                    Action = state.Action = "None",
-                    CurrentBoost = null,
-                    //BoostExpiresAt = null,
-                    IsBoostActive = false
-                };
-
-                _players[playerId] = state;
-                return CopyState(state);
             }
         }
 
@@ -174,30 +122,6 @@ namespace backend.Services
                 return true;
             }
         }
-
-        // public void InitializePlayers()
-        // {
-        //     lock (_lock)
-        //     {
-        //         if (!_players.ContainsKey($"player{"1" || "2"}"))
-        //         {
-        //             _players[1] = new GameState
-        //             {
-        //                 PlayerId = 1,
-        //                 Status = "Idle"
-        //             };
-        //         }
-
-        //         if (!_players.ContainsKey(2))
-        //         {
-        //             _players[2] = new GameState
-        //             {
-        //                 PlayerId = 2,
-        //                 Status = "Idle"
-        //             };
-        //         }
-        //     }
-        // }
 
         public List<GameState> GetAllPlayerStates()
         {
@@ -253,6 +177,28 @@ namespace backend.Services
             }
         }
 
+        public GameState RestartGame(string gamePin)
+        {
+            lock (_lock)
+            {
+                var game = new GameLobby
+                {
+                    Pin = gamePin
+                };
+
+                var gameState = new GameState
+                {
+                    Status = "Running",
+                    Action = "None",
+                    CurrentBoost = null,
+                    IsBoostActive = false,
+                    Lobby = game
+                };
+
+                return CopyState(gameState);
+            }
+        }
+
         private GameState CopyState(GameState state)
         {
             return new GameState
@@ -263,7 +209,7 @@ namespace backend.Services
                 CurrentBoost = state.CurrentBoost,
                 BoostExpiresAt = state.BoostExpiresAt,
                 IsBoostActive = state.IsBoostActive,
-                // MapReady = state.MapReady,
+                Lobby = state.Lobby
             };
         }
     }

@@ -55,17 +55,6 @@ namespace backend.Controllers
             return Ok("Crawl accepted");
         }
 
-        // [HttpPost("score/{id}")]
-        // public IActionResult UpdateScore(int id, [FromQuery] int points)
-        // {
-        //     var success = _gameState.UpdateScore(id, points);
-
-        //     if (!success)
-        //         return BadRequest("Cannot update score");
-
-        //     return Ok(_gameState.GetPlayerState(id));
-        // }
-
         [HttpPost("restartGame/{id}")]
         public IActionResult RestartGame(string id)
         {
@@ -98,19 +87,6 @@ namespace backend.Controllers
 
             return Ok(_gameState.GetPlayerState(id));
         }
-
-
-        // Set map ready
-        // [HttpPost("mapready/{id}")]
-        // public IActionResult PostMapReady(string id, [FromQuery] bool ready)
-        // {
-        //     var success = _gameState.PostMapReady(id, ready);
-
-        //     if (!success)
-        //         return NotFound("Player not found");
-
-        //     return Ok(_gameState.GetPlayerState(id));
-        // }
 
         // Get all players
         [HttpGet("players")]

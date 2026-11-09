@@ -55,12 +55,6 @@ public class MqttSubscriber : BackgroundService
                 }
                 Console.WriteLine($"Lobby {request.Pin} FOUND");
 
-                // if (lobby.Players.Count >= 2)
-                // {
-                //     Console.WriteLine("Lobby is full");
-                //     return;
-                // }
-
                 var existingPlayer = lobby.Players.FirstOrDefault(p => p.DeviceId == deviceId);
                 if (existingPlayer != null)
                 {
@@ -86,6 +80,8 @@ public class MqttSubscriber : BackgroundService
                     .WithPayload(assignedPlayerId)
                     .Build(), stoppingToken);
                 Console.WriteLine($"Assigned {assignedPlayerId} to {deviceId}");
+                
+                var restart = new GameStateService();
             }
         };
         client.ConnectedAsync += e =>
