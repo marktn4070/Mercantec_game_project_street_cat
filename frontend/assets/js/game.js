@@ -8,6 +8,35 @@ let gameStarted = false;
 let timerInterval = null;
 let getDataInterval = null;
 let decisecond = 0;
+let lastDecisecond = 0;
+let gameSession = 0;
+
+
+function resetGame() {
+	gotBoost = false;
+	boostRequestInProgress = false;
+	useBoostRequestInProgress = false;
+	leftKeyWasDown = false;
+	gameStarted = false;
+	decisecond = 0;
+}
+
+function stopCurrentGame() {
+    gameSession++;
+	openedPopup = true;
+	gameStarted = false;
+
+	if (timerInterval !== null) stopTimer();
+	if (getDataInterval !== null) stopDataInterval();
+
+
+	if (decisecond > lastDecisecond){
+		lastDecisecond = decisecond;
+	}
+
+	resetGame();
+}
+
 
 class Vec {
     constructor(x, y) {
@@ -127,7 +156,7 @@ class Player {
         // if (keys.ArrowLeft) xSpeed -= 7;
         // if (keys.ArrowRight) gameStarted = true;
 
-        const element = document.querySelector(".player");
+        // const element = document.querySelector(".player");
 
         // if (gameStarted === true) {
         //     xSpeed += 7;
@@ -339,12 +368,12 @@ function runAnimation(frameFunc) {
     requestAnimationFrame(frame)
 }
 
-function runLevel(level, Display) {
+function runLevel(level, Display, session) {
     let display = new Display(document.body, level),
         state = State.start(level),
         ending = 1;
     return new Promise(resolve => runAnimation(time => {
-        if (openedPopup) {
+        if (session !== gameSession || openedPopup) {
             display.clear();
             resolve("stopped");
             return false;
@@ -352,12 +381,13 @@ function runLevel(level, Display) {
         state = state.update(time, arrowKeys);
 
 		if (state.status === "lost") {
-			if (timerInterval !== null) stopTimer();
-			if (getDataInterval !== null) stopDataInterval();
+			stopCurrentGame();
 		}
 
         display.syncState(state);
+
         if (state.status == "playing") return true;
+
         if (ending > 0) {
             ending -= time;
             return true
@@ -369,9 +399,10 @@ function runLevel(level, Display) {
 }
 
 
-async function runGame(plans, Display) {
+async function runGame(plans, Display, session) {
     for (let level = 0; level < plans.length;) {
-        let result = await runLevel(new Level(plans[level]), Display);
+        let result = await runLevel(new Level(plans[level]), Display, session);
+		if (result === "stopped") return;
         if (result === "lost"){
 			console.log("Timer stoppet efter " + (decisecond / 10) + " sekunder");
 			console.log("Player dead!")
@@ -379,5 +410,6 @@ async function runGame(plans, Display) {
 		}
         if (result === "won") level++;
     }
+	resetGame();
     console.log("Game is over!")
 }

@@ -1,5 +1,5 @@
 // api
-const API_URL = "https://127.0.0.1:7259";
+const API_URL = "https://127.0.0.1:7259/api/game/";
 
 let nextPlayerId = 1;
 
@@ -9,7 +9,7 @@ createData(nextPlayerId);
 async function createData(id) {
     try {
         const response = await fetch(
-            `${API_URL}/api/game/postplayers/${id}`, {
+            `${API_URL}postplayers/${id}`, {
                 method: "POST"
             }
         );
@@ -32,7 +32,7 @@ async function createData(id) {
 async function getData() {
     try {
         const response = await fetch(
-            `${API_URL}/api/game/playerstate/1`
+            `${API_URL}playerstate/1`
         );
 
         if (response.status === 400) {
@@ -52,7 +52,6 @@ async function getData() {
 
         const data = await response.json();
         console.log(data);
-        gotBoost = true;
         return true;
 
     } catch (error) {
@@ -105,7 +104,7 @@ async function postBoostName(boostName) {
 
     try {
         const response = await fetch(
-            `${API_URL}/api/game/boost/collect/1?boostName=${boostName}`, {
+            `${API_URL}boost/collect/1?boostName=${boostName}`, {
                 method: "POST"
             }
         );
@@ -132,7 +131,7 @@ async function postBoostUse() {
 
     try {
         const response = await fetch(
-            `${API_URL}/api/game/boost/use/1`, {
+            `${API_URL}boost/use/1`, {
                 method: "POST"
             }
         );
