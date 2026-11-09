@@ -16,7 +16,7 @@ namespace backend.Services
 
         // Should be removed, only for testing
         // Arduino connects players with game pin.
-        public GameState PostPlayersToGame(string playerId)
+        public void CreatePlayerState(string playerId)
         {
             lock (_lock)
             {
@@ -30,12 +30,10 @@ namespace backend.Services
                     IsBoostActive = false,
                     // MapReady = false
                 };
-
                 _players[playerId] = state;
-
-                return CopyState(state);
             }
         }
+
         public GameState? GetPlayerState(string playerId)
         {
             lock (_lock)
@@ -177,26 +175,28 @@ namespace backend.Services
             }
         }
 
-        public GameState RestartGame(string gamePin)
+        public bool RestartGame(string gamePin)
         {
-            lock (_lock)
-            {
-                var game = _lobbies.FirstOrDefault(l => l.Pin == gamePin);
-                if(gamePin != game?.Pin)
-                    Console.WriteLine("Not correct gamePin");
+            var lobby = _lobbies.FirstOrDefault(l => l.Pin == gamePin);
 
-                Console.WriteLine("resetting game state...");
-                var gameState = new GameState
+            if (lobby == null)
+                return false;
+            Console.WriteLine($"Lobby found: {lobby.Pin}");
+
+            foreach (var player in lobby.Players)
+            {
+                Console.WriteLine($"Player: {player.PlayerId}");
+                if (_players.TryGetValue(player.PlayerId, out var state))
                 {
-                    Status = "Running",
-                    Action = "None",
-                    CurrentBoost = null,
-                    IsBoostActive = false,
-                    Lobby = game
-                };
-                Console.WriteLine("Game states have been reset");
-                return CopyState(gameState);
+                    Console.WriteLine($"Status: {state.Status}");
+                    state.Status = "Running";
+                    state.Action = "None";
+                    state.CurrentBoost = null;
+                    state.BoostExpiresAt = null;
+                    state.IsBoostActive = false;
+                }
             }
+            return true;
         }
 
         private GameState CopyState(GameState state)

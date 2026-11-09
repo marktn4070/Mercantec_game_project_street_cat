@@ -15,12 +15,12 @@ namespace backend.Controllers
             _gameState = gameState;
         }
 
-        [HttpPost("postplayers/{id}")]
-        public IActionResult PostPlayersToGame(string id)
-        {
-            var state = _gameState.PostPlayersToGame(id);
-            return Ok(state);
-        }
+        // [HttpPost("postplayers/{id}")]
+        // public IActionResult PostPlayersToGame(string id)
+        // {
+        //     var state = _gameState.PostPlayersToGame(id);
+        //     return Ok(state);
+        // }
 
         [HttpGet("playerstate/{id}")]
         public IActionResult GetPlayerState(string id)
@@ -54,18 +54,6 @@ namespace backend.Controllers
 
             return Ok("Crawl accepted");
         }
-
-        [HttpPost("restartGame/{id}")]
-        public IActionResult RestartGame(string id)
-        {
-            var success = _gameState.RestartGame(id);
-
-            if (success == null)
-                return NotFound("Player not found");
-
-            return Ok(success);
-        }
-
         // [HttpPost("boost/collect/{id}")]
         // public IActionResult CollectBoost(string id, [FromQuery] string boostName)
         // {
@@ -117,5 +105,17 @@ namespace backend.Controllers
 
             return Ok(lobby);
         }
+        
+        [HttpPost("restartGame/{pin}")]
+        public IActionResult RestartGame(string pin)
+        {
+            var success = _gameState.RestartGame(pin);
+
+            if (!success)
+                return BadRequest("Cannot restart game");
+
+            return Ok();
+        }
+
     }
 }

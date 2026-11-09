@@ -74,14 +74,13 @@ public class MqttSubscriber : BackgroundService
                     DeviceId = deviceId,
                     PlayerId = assignedPlayerId
                 });
+                _gameState.CreatePlayerState(assignedPlayerId);
                 
                 await client.PublishAsync(new MqttApplicationMessageBuilder()
                     .WithTopic($"demo/YMJ-Wildcat/{deviceId}/assigned")
                     .WithPayload(assignedPlayerId)
                     .Build(), stoppingToken);
                 Console.WriteLine($"Assigned {assignedPlayerId} to {deviceId}");
-                
-                var restart = new GameStateService();
             }
         };
         client.ConnectedAsync += e =>
