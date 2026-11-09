@@ -5,31 +5,33 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Platform Game</title>
-    <link rel="stylesheet" href="./assets/style.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/popup.css">
+    <link rel="stylesheet" href="./assets/css/score.css">
     <link rel="icon" href="data:,">
     <style>
     </style>
 </head>
 
 <body>
-
+    <p id="lastHighscore"></p>
     <p id="timer"></p>
 
     <button id="openPopup" class="btnOpenPopup">Restart</button>
     <div id="popup" class="popup">
         <div class="popup-content">
-            <h2>Wild Cat</h2>
-            <!-- <p>Last highscore = xxxx</p> -->
+            <h2 id="heading"></h2>
+            <p id="subheading"></p>
             <button id="startP1" class="btnClosePopup">Start 1p</button>
             <button id="startP2" class="btnClosePopup">Start 2p</button>
         </div>
     </div>
 
-<script src="./assets/maps.js"></script>
-<script src="./assets/game.js"></script>
-<script src="./assets/api.js"></script>
-<script src="./assets/popup.js"></script>
-<script src="./assets/timer.js"></script>
+<script src="./assets/js/maps.js"></script>
+<script src="./assets/js/game.js"></script>
+<script src="./assets/js/api.js"></script>
+<script src="./assets/js/popup.js"></script>
+<script src="./assets/js/timer.js"></script>
 
 </body>
 </html>
