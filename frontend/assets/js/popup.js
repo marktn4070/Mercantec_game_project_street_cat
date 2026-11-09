@@ -4,15 +4,15 @@ const openPopup = document.getElementById('openPopup');
 const startP1 = document.getElementById('startP1');
 const startP2 = document.getElementById('startP2');
 const popup = document.getElementById('popup');
-const gameOver = document.getElementById('gameOver');
+const heading = document.getElementById('heading');
+heading.innerHTML = "Wild Cat";
 
 openPopup.addEventListener('click', () => {
 	stopCurrentGame();
 
 	popup.style.display = 'flex';
 	openPopup.style.display = 'none';
-	gameOver.innerHTML = "Game Over";
-	
+	heading.innerHTML = "Game Over";
 });
 
 startP1.addEventListener('click', startNewGame);
