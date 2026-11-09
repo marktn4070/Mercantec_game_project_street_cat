@@ -1,0 +1,43 @@
+let openedPopup = false;
+const levels = [simpleLevelPlan1, simpleLevelPlan2, simpleLevelPlan3];
+const openPopup = document.getElementById('openPopup');
+const startP1 = document.getElementById('startP1');
+const startP2 = document.getElementById('startP2');
+const popup = document.getElementById('popup');
+const gameOver = document.getElementById('gameOver');
+
+openPopup.addEventListener('click', () => {
+	stopCurrentGame();
+
+	popup.style.display = 'flex';
+	openPopup.style.display = 'none';
+	gameOver.innerHTML = "Game Over";
+	
+});
+
+startP1.addEventListener('click', startNewGame);
+startP2.addEventListener('click', startNewGame);
+
+function startNewGame() {
+	if (gameStarted) return;
+
+	resetGame();
+	openedPopup = false;
+	gameStarted = false;
+
+	popup.style.display = 'none';
+	openPopup.style.display = 'inline-block';
+
+    const session = ++gameSession;
+
+	runGame(levels, DOMDisplay, session);
+
+		console.log("Highscore = " + lastDecisecond)
+
+
+	if (lastDecisecond !== 0){
+		const lastHighscore = document.getElementById('lastHighscore');
+		lastHighscore.innerHTML = "Highscore = " + String(lastDecisecond).padStart(5, "0");
+	}
+}
+

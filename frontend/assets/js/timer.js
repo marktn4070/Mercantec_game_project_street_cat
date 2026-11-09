@@ -1,16 +1,14 @@
 
 
-
-
-
 function startTimer() {
 	if (timerInterval !== null) return;
 
+	const timer = document.getElementById('timer');
+	timer.innerHTML = "Score = " + String(decisecond).padStart(5, "0");
+	
 	timerInterval = setInterval(() => {
-		document.getElementById("timer").innerHTML =
-			"Highscore = " + String(decisecond).padStart(5, "0");
-
 		decisecond++;
+		timer.innerHTML = "Score = " + String(decisecond).padStart(5, "0");
 	}, 100);
 }
 

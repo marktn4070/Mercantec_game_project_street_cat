@@ -24,7 +24,7 @@ body {
 }
 
 .playing {
-	background-image: url("./img/ForestBackground.png");
+	background-image: url("../img/ForestBackground.png");
 	background-repeat: no-repeat;
 	/* background-size: contain, cover; */
 	background-size: cover;
@@ -42,7 +42,7 @@ body {
 	width: 150px !important;
 	height: 150px !important;
 	padding: 0;
-	background-image: url("./img/Bird.gif");
+	background-image: url("../img/Bird.gif");
 	background-repeat: no-repeat;
 	background-size: 150px 150px;
 	background-position: center;
@@ -69,16 +69,16 @@ body {
 /* padding: 25px; */;
 }
 .wall:nth-of-type(4n-3) {
-	background-image: url("./img/platform_1.png");
+	background-image: url("../img/platform_1.png");
 }
 .wall:nth-of-type(4n-2) {
-	background-image: url("./img/platform_2.png");
+	background-image: url("../img/platform_2.png");
 }
 .wall:nth-of-type(4n-1) {
-	background-image: url("./img/platform_3.png");
+	background-image: url("../img/platform_3.png");
 }
 .wall:nth-of-type(4n-4) {
-	background-image: url("./img/platform_4.png");
+	background-image: url("../img/platform_4.png");
 }
 
 /* .wall:nth-of-type(4n-3) {
@@ -102,7 +102,7 @@ body {
 	width: 150px !important;
 	height: 150px !important;
 	padding: 0;
-	background-image: url("./img/Walk_cat_1.gif");
+	background-image: url("../img/Walk_cat_1.gif");
 	background-repeat: no-repeat;
 	background-size: 150px 150px;
 	background-position: center;
@@ -110,11 +110,11 @@ body {
 }
 
 .standStill {
-	background-image: url("./img/Idle.gif");
+	background-image: url("../img/Idle.gif");
 }
 
 .crawl {
-	background-image: url("./img/Crawl.gif");
+	background-image: url("../img/Crawl.gif");
 }
 
 .lost .player {
@@ -179,3 +179,6 @@ body {
 	color: white;
 }
 
+#gameOver {
+	color: #dc3545;
+}
