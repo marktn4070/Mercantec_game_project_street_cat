@@ -46,7 +46,7 @@ if (app.Environment.IsDevelopment())
 }
 
 // Comment https redirect out, as it might cause issues with Dokploy
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseCors("Frontend");
 app.UseSession();
 
