@@ -5,6 +5,8 @@ using MQTTnet.Formatter;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseUrls("http://0.0.0.0:8080");
+
 builder.Services.AddControllers();
 
 builder.Services.AddCors(options =>
@@ -43,6 +45,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+// Comment https redirect out, as it might cause issues with Dokploy
 app.UseHttpsRedirection();
 app.UseCors("Frontend");
 app.UseSession();
