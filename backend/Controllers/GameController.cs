@@ -63,30 +63,30 @@ namespace backend.Controllers
             if (success == null)
                 return NotFound("Player not found");
 
-            return Ok(_gameState.GetPlayerState(id));
+            return Ok(success);
         }
 
-        [HttpPost("boost/collect/{id}")]
-        public IActionResult CollectBoost(string id, [FromQuery] string boostName)
-        {
-            var success = _gameState.CollectBoost(id, boostName);
+        // [HttpPost("boost/collect/{id}")]
+        // public IActionResult CollectBoost(string id, [FromQuery] string boostName)
+        // {
+        //     var success = _gameState.CollectBoost(id, boostName);
 
-            if (!success)
-                return BadRequest("Cannot collect boost");
+        //     if (!success)
+        //         return BadRequest("Cannot collect boost");
 
-            return Ok(_gameState.GetPlayerState(id));
-        }
+        //     return Ok(_gameState.GetPlayerState(id));
+        // }
 
-        [HttpPost("boost/use/{id}")]
-        public IActionResult UseBoost(string id)
-        {
-            var success = _gameState.TryUseBoost(id, out var boost);
+        // [HttpPost("boost/use/{id}")]
+        // public IActionResult UseBoost(string id)
+        // {
+        //     var success = _gameState.TryUseBoost(id, out var boost);
 
-            if (!success)
-                return BadRequest("No boost available");
+        //     if (!success)
+        //         return BadRequest("No boost available");
 
-            return Ok(_gameState.GetPlayerState(id));
-        }
+        //     return Ok(_gameState.GetPlayerState(id));
+        // }
 
         // Get all players
         [HttpGet("players")]

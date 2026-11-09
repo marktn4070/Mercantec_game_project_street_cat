@@ -181,11 +181,11 @@ namespace backend.Services
         {
             lock (_lock)
             {
-                var game = new GameLobby
-                {
-                    Pin = gamePin
-                };
+                var game = _lobbies.FirstOrDefault(l => l.Pin == gamePin);
+                if(gamePin != game?.Pin)
+                    Console.WriteLine("Not correct gamePin");
 
+                Console.WriteLine("resetting game state...");
                 var gameState = new GameState
                 {
                     Status = "Running",
@@ -194,13 +194,14 @@ namespace backend.Services
                     IsBoostActive = false,
                     Lobby = game
                 };
-
+                Console.WriteLine("Game states have been reset");
                 return CopyState(gameState);
             }
         }
 
         private GameState CopyState(GameState state)
         {
+            Console.WriteLine("Copying new game state...");
             return new GameState
             {
                 PlayerId = state.PlayerId,
