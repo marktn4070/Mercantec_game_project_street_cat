@@ -9,29 +9,18 @@ builder.WebHost.UseUrls("http://0.0.0.0:8080");
 
 builder.Services.AddControllers();
 
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy("Frontend", policy =>
-//    {
-//        policy.WithOrigins(
-//    "https://mk.trp.solutions",
-//    "http://127.0.0.1",
-//    "https://wildcat.mercantec.tech"
-//)
-//.AllowAnyHeader()
-//.AllowAnyMethod();
-//    });
-//});
-
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy("Frontend", policy =>
-	{
-		policy
-			.AllowAnyOrigin()
-			.AllowAnyHeader()
-			.AllowAnyMethod();
-	});
+    options.AddPolicy("Frontend", policy =>
+    {
+        policy.WithOrigins(
+    "https://mk.trp.solutions",
+    "http://127.0.0.1",
+    "https://wildcat.mercantec.tech"
+)
+.AllowAnyHeader()
+.AllowAnyMethod();
+    });
 });
 
 // Session State
