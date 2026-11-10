@@ -11,6 +11,19 @@ body {
 	position: relative;
 	margin: 20px auto;
 }
+
+#multiplayer-container {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+#player1-container,
+#player2-container {
+    transform: scale(0.75);
+    transform-origin: top center;
+}
+
 .background {
 	/* background: rgb(52, 166, 251); */
 	table-layout: fixed;
