@@ -61,6 +61,14 @@ namespace backend.Services
             {
                 if (!_players.TryGetValue(playerId, out var state))
                     return null;
+                    
+                if (state.IsBoostActive && state.BoostExpiresAt.HasValue && DateTime.UtcNow >= state.BoostExpiresAt.Value)
+                {
+                    Console.WriteLine($"Boost expired for {playerId}");
+                    state.IsBoostActive = false;
+                    state.CurrentBoost = null;
+                    state.BoostExpiresAt = null;
+                }
 
                 var copy = CopyState(state);
                 if (state.Action == "Jump")

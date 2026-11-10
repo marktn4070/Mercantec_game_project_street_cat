@@ -103,6 +103,29 @@ public class MqttSubscriber : BackgroundService
 
                 _gameState.PostAction(playerId, action);
             }
+            
+            if (topic.Contains("/input/Boost"))
+            {
+                var parts = topic.Split("/");
+
+                var playerId = parts[4];
+
+                Console.WriteLine(
+                    $"Boost request from {playerId}"
+                );
+
+                var success =
+                    _gameState.TryUseBoost(
+                        playerId,
+                        out var boost
+                    );
+
+                Console.WriteLine(
+                    success
+                        ? $"Boost activated: {boost}"
+                        : $"No boost available for {playerId}"
+                );
+            }
         };
         client.ConnectedAsync += e =>
         {

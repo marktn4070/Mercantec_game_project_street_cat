@@ -29,9 +29,16 @@ async function getData() {
             }
 
             const data = await response.json();
-            console.log(
-                `${player.playerId}: ${data.action}`
-            );
+            console.log(`${player.playerId}: ${data.action}`);
+
+            if (data.isBoostActive && data.currentBoost === "Invisibility")
+            {
+                playerMode = "Invisibility";
+            }
+            else
+            {
+                playerMode = "";
+            }
 
             if (data.action === "Jump") {
                 console.log("REMOTE JUMP");

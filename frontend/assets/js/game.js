@@ -156,18 +156,18 @@ class Player {
 
 		if (gameStarted) xSpeed = 7;
 
-        const leftKeyPressed = keys.ArrowLeft && !leftKeyWasDown;
+        // const leftKeyPressed = keys.ArrowLeft && !leftKeyWasDown;
 
-        leftKeyWasDown = keys.ArrowLeft;
+        // leftKeyWasDown = keys.ArrowLeft;
 
-        if (leftKeyPressed) {
-            if (!gotBoost) {
-				playerMode = "Invisibility";
-                postBoostName(playerMode);
-            } else {
-                postBoostUse();
-            }
-        }
+        // if (leftKeyPressed) {
+        //     if (!gotBoost) {
+		// 		playerMode = "Invisibility";
+        //         postBoostName(playerMode);
+        //     } else {
+        //         postBoostUse();
+        //     }
+        // }
 
         let normalSize = new Vec(.8, 1);
         let crouchSize = new Vec(.8, .75);
@@ -288,12 +288,15 @@ class Coin {
     }
     collide(state) {
         let actors = state.actors.filter(a => a != this);
-		playerMode = "Invisibility";
-		postBoostName(playerMode);
-		///////
-        // return new State(state.level, actors, "Invisibility")
-        return new State(state.level, actors, state.status)
-        // return new State(state.level, actors, actors.some(a => a.type == "coin") ? state.status : "won")
+    
+        if (!gotBoost) {
+            postBoostName("Invisibility");
+        }
+        return new State(
+            state.level,
+            actors,
+            state.status
+        );
     }
 }
 Coin.prototype.size = new Vec(.6, .6);
