@@ -8,16 +8,19 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     depends_on:
-      - backend
+      - wildcat-backend
     networks:
-      - default
       - dokploy-network
     restart: unless-stopped
 
-  backend:
+  wildcat-backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    networks:
+      - dokploy-network
+    labels:
+      traefik.enable: "false"
     restart: unless-stopped
     environment:
       ASPNETCORE_ENVIRONMENT: Production
