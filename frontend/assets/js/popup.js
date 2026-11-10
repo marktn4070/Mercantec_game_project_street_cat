@@ -25,7 +25,7 @@ console.log("startP2 =", startP2);
 
 async function startNewGame(gameMode) {
 	console.log("START NEW GAME", gameMode);
-	
+
     if (gameStarted) return;
     const response = await fetch(
         `${API_URL}createlobby?gameMode=${gameMode}`,
@@ -36,7 +36,7 @@ async function startNewGame(gameMode) {
 
     const pin = await response.text();
     console.log("Pin:", pin);
-    await getLobby(pin);
+    await waitForPlayers(pin)
 	console.log("Players in lobby:", players);
 
     resetGame();
@@ -58,6 +58,36 @@ async function startNewGame(gameMode) {
         lastHighscore.innerHTML =
             "Highscore = " +
             String(lastDecisecond).padStart(5, "0");
+    }
+}
+
+async function waitForPlayers(pin) {
+
+    while (true) {
+
+        const response =
+            await fetch(`${API_URL}lobby/${pin}`);
+
+        const lobby =
+            await response.json();
+
+        console.log("Players:", lobby.players);
+
+        if (lobby.players.length > 0) {
+
+            players = lobby.players;
+
+            console.log(
+                "Player joined!",
+                players
+            );
+
+            return;
+        }
+
+        await new Promise(r =>
+            setTimeout(r, 1000)
+        );
     }
 }
 
