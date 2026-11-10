@@ -1,5 +1,5 @@
 // api
-const API_URL = "https://127.0.0.1:7259/api/game/";
+const API_URL = "https://wildcat.mercantec.tech/api/game/";
 
 let nextPlayerId = 1;
 
