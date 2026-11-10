@@ -16,6 +16,27 @@ namespace backend.Services
 
         // Should be removed, only for testing
         // Arduino connects players with game pin.
+        public GameState PostPlayersToGame(string playerId)
+        {
+            lock (_lock)
+            {
+                var state = new GameState
+                {
+                    PlayerId = playerId,
+                    Status = "Running",
+                    Action = "None",
+                    CurrentBoost = null,
+                    BoostExpiresAt = null,
+                    IsBoostActive = false,
+                    // MapReady = false
+                };
+
+                _players[playerId] = state;
+
+                return CopyState(state);
+            }
+        }
+
         public void CreatePlayerState(string playerId)
         {
             lock (_lock)

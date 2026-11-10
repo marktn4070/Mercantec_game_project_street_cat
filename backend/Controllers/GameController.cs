@@ -14,6 +14,13 @@ namespace backend.Controllers
         {
             _gameState = gameState;
         }
+        
+        [HttpPost("postplayers/{id}")]
+        public IActionResult PostPlayersToGame(string id)
+        {
+            var state = _gameState.PostPlayersToGame(id);
+            return Ok(state);
+        }
 
         [HttpGet("playerstate/{id}")]
         public IActionResult GetPlayerState(string id)
