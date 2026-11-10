@@ -146,30 +146,99 @@ body {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: rgba(0, 0, 0, 0.5);
+	background: rgba(0,0,0,.6);
+    backdrop-filter: blur(5px);
 	justify-content: center;
 	align-items: center;
 	z-index: 9999;
 }
 
-.btnOpenPopup,
-.btnClosePopup {
-	cursor:pointer;
-	border-radius: 5px;
+.btnClosePopup,
+#restartBtn,
+#startGameBtn {
+    background: #2e7d32;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,.25);
 }
-.btnClosePopup {
-	background-color: #28a745;
-	margin-top: 10px;
-	padding: 5px 10px;
-	color: #fff;
-	border: none;
-	border-radius: 3px;
+
+.btnClosePopup:hover,
+#restartBtn:hover,
+#startGameBtn:hover {
+    transform: translateY(-2px);
+    background: #388e3c;
 }
+
+.btnClosePopup:active,
+#restartBtn:active,
+#startGameBtn:active {
+    transform: translateY(1px);
+}
+
+#startGameBtn {
+    display: block;
+    margin: 20px auto;
+    width: 250px;
+    font-size: 26px;
+}
+
+#timer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(0,0,0,.7);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 28px;
+    font-weight: bold;
+    z-index: 1000;
+}
+
+#lastHighscore {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: rgba(0,0,0,.7);
+    color: gold;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 22px;
+    font-weight: bold;
+    z-index: 1000;
+}
+
 .popup-content {
-	background: #fff;
-	padding: 20px;
-	border-radius: 5px;
-	text-align: center;
+    background: rgba(255,255,255,0.95);
+    padding: 40px;
+    min-width: 320px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0,0,0,.4);
+    border: 3px solid #2e7d32;
+}
+
+#heading {
+    font-size: 42px;
+    font-weight: bold;
+    color: #2e7d32;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+#subheading {
+    font-size: 24px;
+
+    font-weight: bold;
+
+    color: #444;
+
+    margin-bottom: 25px;
 }
 
 .btnOpenPopup {
