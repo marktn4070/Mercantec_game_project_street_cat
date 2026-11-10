@@ -1,6 +1,7 @@
 networks:
   dokploy-network:
     external: true
+    name: dokploy-network
 
 services:
   frontend:
