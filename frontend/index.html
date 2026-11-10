@@ -16,19 +16,27 @@
 <body>
     <p id="lastHighscore"></p>
     <p id="timer"></p>
-
-    <button id="openPopup" class="btnOpenPopup">Restart</button>
-    <button id="startGameBtn" style="display:none;">
-        Start Game
-    </button>
-    <div id="popup" class="popup">
-        <div class="popup-content">
-            <h2 id="heading"></h2>
-            <p id="subheading"></p>
-            <button id="startP1" class="btnClosePopup">Start 1p</button>
-            <button id="startP2" class="btnClosePopup">Start 2p</button>
-        </div>
+<button id="openPopup" class="btnOpenPopup">Restart</button>
+<button id="startGameBtn" style="display:none;">
+    Start Game
+</button>
+<div id="popup" class="popup">
+    <div class="popup-content">
+        <h2 id="heading"></h2>
+        <p id="subheading"></p>
+        <button id="startP1" class="btnClosePopup">Start 1p</button>
+        <button id="startP2" class="btnClosePopup">Start 2p</button>
     </div>
+</div>
+<div id="singleplayer-container"></div>
+
+<div id="multiplayer-container" style="display:none;">
+
+    <div id="player1-container"></div>
+
+    <div id="player2-container"></div>
+
+</div>
 
 <script src="./assets/js/maps.js"></script>
 <script src="./assets/js/game.js"></script>

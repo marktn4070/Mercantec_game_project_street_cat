@@ -10,8 +10,20 @@ let lastDecisecond = 0;
 let gameSession = 0;
 let playerMode = "";
 
+// let remoteInputs = {
+//     player1: {
+//         jump: false,
+//         crawl: false
+//     },
+//     player2: {
+//         jump: false,
+//         crawl: false
+//     }
+// };
+
 let remoteJump = false;
 let remoteCrawl = false;
+
 console.log("GAME FILE LOADED");
 
 //Call restartgame
@@ -175,7 +187,6 @@ class Player {
                 size = crouchSize;
             }
         }
-        console.log("size:", size.y, "remoteCrawl:", remoteCrawl);
         let movedX = pos.plus(new Vec(xSpeed * time, 0));
 
         if (!state.level.touches(movedX, size, "wall")) {
@@ -375,8 +386,9 @@ function runAnimation(frameFunc) {
     requestAnimationFrame(frame)
 }
 
-function runLevel(level, Display, session) {
-    let display = new Display(document.body, level),
+function runLevel(level, Display, session, parentElement) {
+
+    let display = new Display(parentElement, level),
         state = State.start(level),
         ending = 1;
     return new Promise(resolve => runAnimation(time => {
@@ -406,9 +418,9 @@ function runLevel(level, Display, session) {
 }
 
 
-async function runGame(plans, Display, session) {
+async function runGame(plans, Display, session, parentElement) {
     for (let level = 0; level < plans.length;) {
-        let result = await runLevel(new Level(plans[level]), Display, session);
+        let result = await runLevel(new Level(plans[level]), Display, session, parentElement);
 		if (result === "stopped") return;
         if (result === "lost"){
 			console.log("Timer stoppet efter " + (decisecond / 10) + " sekunder");
@@ -417,6 +429,32 @@ async function runGame(plans, Display, session) {
 		}
         // if (result === "won") level++;
     }
-	resetGame();
+    resetGame();
     console.log("Game is over!")
+}
+
+async function runMultiplayerGame(
+    plans,
+    session
+) {
+    const level =
+        new Level(plans[0]);
+
+    runLevel(
+        level,
+        DOMDisplay,
+        session,
+        document.getElementById(
+            "player1-container"
+        )
+    );
+
+    runLevel(
+        level,
+        DOMDisplay,
+        session,
+        document.getElementById(
+            "player2-container"
+        )
+    );
 }

@@ -19,23 +19,25 @@ openPopup.addEventListener('click', () => {
 
 startP1.addEventListener('click', () => startNewGame(1));
 startP2.addEventListener('click', () => startNewGame(2));
+let currectGameMode;
 
 console.log("startP1 =", startP1);
 console.log("startP2 =", startP2);
 
 async function startNewGame(gameMode) {
 	console.log("START NEW GAME", gameMode);
+	currectGameMode = gameMode;
 
-    if (gameStarted) return;
-    const response = await fetch(
-        `${API_URL}createlobby?gameMode=${gameMode}`,
-        {
-            method: "POST"
-        }
-    );
+	if (gameStarted) return;
+	const response = await fetch(
+		`${API_URL}createlobby?gameMode=${gameMode}`,
+		{
+			method: "POST"
+		}
+	);
 
-    const pin = await response.text();
-    console.log("Pin:", pin);
+	const pin = await response.text();
+	console.log("Pin:", pin);
 	await waitForPlayers(pin)
 	console.log("Players in lobby:", players);
 	console.log("Players in lobby:", players);
@@ -44,13 +46,48 @@ async function startNewGame(gameMode) {
 	startGameBtn.addEventListener("click", () => {
 
 		console.log("START GAME CLICKED");
-	
+
 		gameStarted = true;
-	
+
 		startDataInterval();
 		startTimer();
-	
+
 		startGameBtn.style.display = "none";
+		const session = ++gameSession;
+		if (currectGameMode === 1) {
+
+			document.getElementById(
+				"singleplayer-container"
+			).style.display = "block";
+
+			document.getElementById(
+				"multiplayer-container"
+			).style.display = "none";
+
+			runGame(
+				levels,
+				DOMDisplay,
+				session,
+				document.getElementById(
+					"singleplayer-container"
+				)
+			);
+		}
+		else {
+
+			document.getElementById(
+				"singleplayer-container"
+			).style.display = "none";
+
+			document.getElementById(
+				"multiplayer-container"
+			).style.display = "block";
+
+			runMultiplayerGame(
+				levels,
+				session
+			);
+		}
 	});
 	resetGame();
 
@@ -59,47 +96,44 @@ async function startNewGame(gameMode) {
 	popup.style.display = 'none';
 	openPopup.style.display = 'inline-block';
 
-	const session = ++gameSession;
-    runGame(levels, DOMDisplay, session);
+	if (lastDecisecond !== 0) {
+		console.log("Highscore = " + lastDecisecond);
 
-    if (lastDecisecond !== 0){
-        console.log("Highscore = " + lastDecisecond);
+		const lastHighscore =
+			document.getElementById('lastHighscore');
 
-        const lastHighscore =
-            document.getElementById('lastHighscore');
-
-        lastHighscore.innerHTML =
-            "Highscore = " +
-            String(lastDecisecond).padStart(5, "0");
-    }
+		lastHighscore.innerHTML =
+			"Highscore = " +
+			String(lastDecisecond).padStart(5, "0");
+	}
 }
 
 async function waitForPlayers(pin) {
 
-    while (true) {
+	while (true) {
 
-        const response =
-            await fetch(`${API_URL}lobby/${pin}`);
+		const response =
+			await fetch(`${API_URL}lobby/${pin}`);
 
-        const lobby =
-            await response.json();
+		const lobby =
+			await response.json();
 
-        console.log("Players:", lobby.players);
+		console.log("Players:", lobby.players);
 
-        if (lobby.players.length > 0) {
+		if (lobby.players.length > 0) {
 
-            players = lobby.players;
+			players = lobby.players;
 
-            console.log(
-                "Player joined!",
-                players
-            );
+			console.log(
+				"Player joined!",
+				players
+			);
 
-            return;
-        }
+			return;
+		}
 
-        await new Promise(r =>
-            setTimeout(r, 1000)
-        );
-    }
+		await new Promise(r =>
+			setTimeout(r, 1000)
+		);
+	}
 }
