@@ -28,4 +28,4 @@ function createLevel() {
 
  console.log(lvl_1);
  }
- 
+ createLevel();
