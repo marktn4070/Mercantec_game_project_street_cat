@@ -164,7 +164,7 @@ class Player {
                 ? crouchSize
                 : normalSize;
 
-        if (!keys.ArrowDown && this.size.y < normalSize.y) {
+        if (!keys.ArrowDown && !remoteCrawl && this.size.y < normalSize.y) {
             let standingPos = pos.plus(
                 new Vec(0, this.size.y - normalSize.y)
             );
@@ -175,7 +175,7 @@ class Player {
                 size = crouchSize;
             }
         }
-
+        console.log("size:", size.y, "remoteCrawl:", remoteCrawl);
         let movedX = pos.plus(new Vec(xSpeed * time, 0));
 
         if (!state.level.touches(movedX, size, "wall")) {
