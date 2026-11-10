@@ -41,9 +41,9 @@ async function getData() {
                 remoteCrawl = true;
             }
 
-            // if (data.action === "Stand") {
-            //     remoteCrawl = false;
-            // }
+            if (data.action === "Stand") {
+                remoteCrawl = false;
+            }
         }
         return true;
     } catch (error) {
