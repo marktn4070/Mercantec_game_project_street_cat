@@ -85,10 +85,22 @@ namespace backend.Services
 
                 if (state.Status != "Running")
                     return false;
-                if (action != "Jump" && action != "Crawl" && action != "None")
+
+                if (action != "Jump" &&
+                    action != "Crawl" &&
+                    action != "None")
                     return false;
 
+                if (action == "None")
+                {
+                    Console.WriteLine($"Ignoring None for {playerId}");
+                    return true;
+                }
+
                 state.Action = action;
+
+                Console.WriteLine($"Stored {action} for {playerId}");
+
                 return true;
             }
         }
