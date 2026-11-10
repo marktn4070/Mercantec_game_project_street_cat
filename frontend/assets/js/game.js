@@ -289,8 +289,8 @@ class Coin {
 		playerMode = "Invisibility";
 		postBoostName(playerMode);
 		///////
-        return new State(state.level, actors, "Invisibility")
-        // return new State(state.level, actors, state.status)
+        // return new State(state.level, actors, "Invisibility")
+        return new State(state.level, actors, state.status)
         // return new State(state.level, actors, actors.some(a => a.type == "coin") ? state.status : "won")
     }
 }
