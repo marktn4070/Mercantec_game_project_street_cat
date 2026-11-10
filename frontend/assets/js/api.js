@@ -6,57 +6,67 @@ let nextPlayerId = 1;
 createData(nextPlayerId);
 
 
-async function createData(id) {
-    try {
-        const response = await fetch(
-            `${API_URL}postplayers/${id}`, {
-                method: "POST"
-            }
-        );
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error(`HTTP-fejl: ${errorText}`);
-        }
+// async function createData(id) {
+//     try {
+//         const response = await fetch(
+//             `${API_URL}postplayers/${id}`, {
+//                 method: "POST"
+//             }
+//         );
+//         if (!response.ok) {
+//             const errorText = await response.text();
+//             console.error(`HTTP-fejl: ${errorText}`);
+//         }
 
-        console.log(`Bruger oprettet`);
-        nextPlayerId++;
-        return true;
+//         console.log(`Bruger oprettet`);
+//         nextPlayerId++;
+//         return true;
 
-    } catch (error) {
-        console.error("Netværksfejl ved oprettelse af bruger:", error);
-        return false;
-    }
-}
+//     } catch (error) {
+//         console.error("Netværksfejl ved oprettelse af bruger:", error);
+//         return false;
+//     }
+// }
 
 
 async function getData() {
     try {
-        const response = await fetch(
-            `${API_URL}playerstate/1`
-        );
 
-        if (response.status === 400) {
-            console.error("400: Ugyldig forespørgsel");
-            return false;
+        for (const player of players) {
+
+            const response = await fetch(
+                `${API_URL}playerstate/${player.playerId}`
+            );
+
+            if (response.status === 400) {
+                console.error("400: Ugyldig forespørgsel");
+                return false;
+            }
+
+            if (response.status === 404) {
+                const errorText = await response.text();
+                console.error(`404: ${errorText}`);
+                return false;
+            }
+
+            if (!response.ok) {
+                throw new Error(`HTTP-fejl: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.action === "Jump") {
+                remoteJump = true;
+            }
+
+            if (data.action === "Crawl") {
+                remoteCrawl = true;
+            }
         }
-
-        if (response.status === 404) {
-            const errorText = await response.text();
-            console.error(`404: ${errorText}`);
-            return false;
-        }
-
-        if (!response.ok) {
-            throw new Error(`HTTP-fejl: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log(data);
         return true;
-
     } catch (error) {
         console.error("Kunne ikke hente data:", error);
-		return false;
+        return false;
     }
 }
 
@@ -73,9 +83,8 @@ async function startDataInterval() {
 		if (!gotData || gameStarted === false) {
 			stopDataInterval();
 		}
-	}, 1000);
+	}, 50);
 }
-
 
 function stopDataInterval() {
 	if (getDataInterval !== null) {
@@ -84,18 +93,9 @@ function stopDataInterval() {
 		console.log("Data interval stopped");
 	}
 }
-
 startDataInterval();
 
-
-// getData();
-// setInterval(getData, 1000);
-
-
-
-
 let boostActive = false;
-
 
 async function postBoostName(boostName) {
     if (useBoostRequestInProgress || boostActive) return false;
@@ -159,4 +159,22 @@ async function postBoostUse() {
     } finally {
         useBoostRequestInProgress = false;
     }
+}
+
+let players = [];
+
+async function getLobby(pin) {
+    const response = await fetch(
+        `${API_URL}lobby/${pin}`
+    );
+
+    if (!response.ok)
+        return false;
+
+    const lobby = await response.json();
+
+    players = lobby.players;
+    console.log(players);
+
+    return true;
 }
