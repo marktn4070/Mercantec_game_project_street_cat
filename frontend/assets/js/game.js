@@ -10,7 +10,7 @@ let getDataInterval = null;
 let decisecond = 0;
 let lastDecisecond = 0;
 let gameSession = 0;
-let playerMode = "playing";
+let playerMode = "";
 
 function resetGame() {
 	gotBoost = false;
@@ -19,7 +19,7 @@ function resetGame() {
 	leftKeyWasDown = false;
 	gameStarted = false;
 	decisecond = 0;
-	playerMode = "playing";
+	playerMode = "";
 }
 
 function stopCurrentGame() {
@@ -85,7 +85,7 @@ class State {
         this.status = status
     }
     static start(level) {
-        return new State(level, level.startActors, playerMode)
+        return new State(level, level.startActors, "playing")
     }
     get player() {
         return this.actors.find(a => a.type == "player")
@@ -93,7 +93,7 @@ class State {
     update(time, keys) {
         let actors = this.actors.map(actor => actor.update(time, this, keys));
         let state = new State(this.level, actors, this.status);
-        if (state.status != playerMode) return state;
+        if (state.status != "playing") return state;
         let player = state.player;
         if (this.level.touches(player.pos, player.size, "lava")) return new State(this.level, actors, "lost");
         for (let actor of actors)
@@ -136,8 +136,8 @@ class Player {
 
 		if (keys.ArrowDown) animation = "crawl";
 
-		if (playerMode === "bonus") {
-			animation += " bonus";
+		if (playerMode === "Invisibility") {
+			animation += " Invisibility";
 		}else{
 			animation = animation;
 		}
@@ -153,7 +153,8 @@ class Player {
 
         if (leftKeyPressed) {
             if (!gotBoost) {
-                postBoostName("Invisibility");
+				playerMode = "Invisibility";
+                postBoostName(playerMode);
             } else {
                 postBoostUse();
             }
@@ -266,10 +267,10 @@ class Coin {
     }
     collide(state) {
         let actors = state.actors.filter(a => a != this);
-		postBoostName("Invisibility");
-		playerMode = "bonus";
+		playerMode = "Invisibility";
+		postBoostName(playerMode);
 		///////
-        return new State(state.level, actors, "bonus")
+        return new State(state.level, actors, "Invisibility")
         // return new State(state.level, actors, state.status)
         // return new State(state.level, actors, actors.some(a => a.type == "coin") ? state.status : "won")
     }
@@ -401,7 +402,7 @@ function runLevel(level, Display, session) {
 
         display.syncState(state);
 
-        if (state.status == playerMode) return true;
+        if (state.status == "playing") return true;
 
         if (ending > 0) {
             ending -= time;

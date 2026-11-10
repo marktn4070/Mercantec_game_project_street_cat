@@ -1,5 +1,5 @@
 // api
-const API_URL = "/api/game/";
+const API_URL = "https://127.0.0.1:7259/api/game/";
 
 let nextPlayerId = 1;
 
@@ -148,6 +148,7 @@ async function postBoostUse() {
 
 		setTimeout(() => {
 			boostActive = false;
+			playerMode = "";
 			console.log("Boost kan bruges igen");
 		}, 6000);
 
