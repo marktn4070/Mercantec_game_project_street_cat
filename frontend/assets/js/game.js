@@ -245,11 +245,11 @@ class Lava {
         return new Lava(this.pos, this.speed.times(-1))
     }
     collide(state) {
-        // stopCurrentGame();
+        stopCurrentGame();
 
-        // popup.style.display = 'flex';
-        // openPopup.style.display = 'none';
-        // heading.innerHTML = "Game Over";
+        popup.style.display = 'flex';
+        openPopup.style.display = 'none';
+        heading.innerHTML = "Game Over";
         
         return new State(state.level, state.actors, "lost")
     }
