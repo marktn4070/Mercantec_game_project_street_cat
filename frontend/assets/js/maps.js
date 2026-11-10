@@ -24,8 +24,10 @@ airBetweenObj = ".".repeat(BetweenObjLength / 3);
 
 
 
- let lvlPart3 = airBetweenObj + replaceAt(air, "|", 2); // bird (up + down)
+//  let lvlPart3 = airBetweenObj + replaceAt(air, "|", 2); // bird (up + down)
+ let lvlPart3 = airBetweenObj + replaceAt(air, "=", 1); // bird (up + down)
  lvlPart3 = airBetweenObj + replaceAt(lvlPart3, "o", 1); // Coin
+//  lvlPart3 = airBetweenObj + replaceAt(lvlPart3, "=", 1); // Coin
  lvlPart3 = replaceAt(lvlPart3, "@") + airBetweenObj; // Character
 
  airBetweenObj = "#".repeat(BetweenObjLength);
