@@ -9,9 +9,6 @@ let decisecond = 0;
 let lastDecisecond = 0;
 let gameSession = 0;
 let playerMode = "";
-const restartBtn = document.getElementById("restartBtn");
-
-const subheading = document.getElementById("subheading");
 
 // let remoteInputs = {
 //     player1: {
@@ -250,11 +247,10 @@ class Lava {
     collide(state) {
         stopCurrentGame();
     
-        popup.style.display = 'flex';
-        openPopup.style.display = 'none';
-    
+        popup.style.display = 'flex';    
         heading.innerHTML = "Game Over";
-    
+
+        console.log("Final score:", lastDecisecond);
         subheading.innerHTML = "Score: " +String(lastDecisecond).padStart(5, "0");
     
         startP1.style.display = "none";

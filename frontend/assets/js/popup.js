@@ -1,6 +1,5 @@
 let openedPopup = false;
 const levels = [lvl_1];
-const openPopup = document.getElementById('openPopup');
 const startP1 = document.getElementById('startP1');
 const startP2 = document.getElementById('startP2');
 const popup = document.getElementById('popup');
@@ -11,14 +10,6 @@ const subheading = document.getElementById("subheading");
 heading.innerHTML = "Wild Cat";
 
 console.log("MENU FILE LOADED");
-
-openPopup.addEventListener('click', () => {
-	stopCurrentGame();
-
-	popup.style.display = 'flex';
-	openPopup.style.display = 'none';
-	heading.innerHTML = "Game Over";
-});
 
 startP1.addEventListener('click', () => startNewGame(1));
 startP2.addEventListener('click', () => startNewGame(2));
@@ -109,7 +100,6 @@ async function startNewGame(gameMode) {
 	openedPopup = false;
 
 	popup.style.display = 'none';
-	openPopup.style.display = 'inline-block';
 
 	restartBtn.style.display = "none";
 	startP1.style.display ="inline-block";
