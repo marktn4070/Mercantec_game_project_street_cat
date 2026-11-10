@@ -15,10 +15,13 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins("https://mk.trp.solutions")
               .WithOrigins("http://127.0.0.1")
+              .WithOrigins("https://wildcat.mercantec.tech/")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
+
+
 
 // Session State
 builder.Services.AddDistributedMemoryCache();
