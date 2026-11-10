@@ -1,5 +1,5 @@
 let openedPopup = false;
-const levels = [simpleLevelPlan1, simpleLevelPlan2, simpleLevelPlan3];
+const levels = [lvl_1];
 const openPopup = document.getElementById('openPopup');
 const startP1 = document.getElementById('startP1');
 const startP2 = document.getElementById('startP2');
