@@ -237,7 +237,7 @@ namespace backend.Services
             return true;
         }
 
-        public List<string> CloseLobby(string pin)
+        public void CloseLobby(string pin)
         {
             var lobby =
                 _lobbies.FirstOrDefault(
@@ -245,12 +245,7 @@ namespace backend.Services
                 );
 
             if (lobby == null)
-                return [];
-
-            var deviceIds =
-                lobby.Players
-                     .Select(p => p.DeviceId)
-                     .ToList();
+                return;
 
             foreach (var player in lobby.Players)
             {
@@ -262,8 +257,6 @@ namespace backend.Services
             Console.WriteLine(
                 $"[LOBBY CLOSED] {pin}"
             );
-
-            return deviceIds;
         }
 
         private GameState CopyState(GameState state)

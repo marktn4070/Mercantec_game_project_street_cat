@@ -100,7 +100,6 @@ namespace backend.Controllers
         public IActionResult CloseLobby(string pin)
         {
             _gameState.CloseLobby(pin);
-
             return Ok();
         }
     }
