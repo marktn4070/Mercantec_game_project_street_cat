@@ -1,31 +1,8 @@
 // api
-const API_URL = "https://wildcat.mercantec.tech/api/game/";
+const API_URL = "https://wildcat.mercantec.tech";
+console.log("API FILE LOADED");
 
 let nextPlayerId = 1;
-
-// createData(nextPlayerId);
-// async function createData(id) {
-//     try {
-//         const response = await fetch(
-//             `${API_URL}postplayers/${id}`, {
-//                 method: "POST"
-//             }
-//         );
-//         if (!response.ok) {
-//             const errorText = await response.text();
-//             console.error(`HTTP-fejl: ${errorText}`);
-//         }
-
-//         console.log(`Bruger oprettet`);
-//         nextPlayerId++;
-//         return true;
-
-//     } catch (error) {
-//         console.error("Netværksfejl ved oprettelse af bruger:", error);
-//         return false;
-//     }
-// }
-
 
 async function getData() {
     try {

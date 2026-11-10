@@ -1,5 +1,3 @@
-//
-
 let gotBoost = false;
 let boostRequestInProgress = false;
 let useBoostRequestInProgress = false;
@@ -14,6 +12,7 @@ let playerMode = "";
 
 let remoteJump = false;
 let remoteCrawl = false;
+console.log("GAME FILE LOADED");
 
 //Call restartgame
 function resetGame() {

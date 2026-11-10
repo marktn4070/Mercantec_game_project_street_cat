@@ -7,6 +7,8 @@ const popup = document.getElementById('popup');
 const heading = document.getElementById('heading');
 heading.innerHTML = "Wild Cat";
 
+console.log("MENU FILE LOADED");
+
 openPopup.addEventListener('click', () => {
 	stopCurrentGame();
 
@@ -18,8 +20,12 @@ openPopup.addEventListener('click', () => {
 startP1.addEventListener('click', () => startNewGame(1));
 startP2.addEventListener('click', () => startNewGame(2));
 
-async function startNewGame(gameMode) {
+console.log("startP1 =", startP1);
+console.log("startP2 =", startP2);
 
+async function startNewGame(gameMode) {
+	console.log("START NEW GAME", gameMode);
+	
     if (gameStarted) return;
     const response = await fetch(
         `${API_URL}createlobby?gameMode=${gameMode}`,
