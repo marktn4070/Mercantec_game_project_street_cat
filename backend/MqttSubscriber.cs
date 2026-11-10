@@ -82,6 +82,19 @@ public class MqttSubscriber : BackgroundService
                     .Build(), stoppingToken);
                 Console.WriteLine($"Assigned {assignedPlayerId} to {deviceId}");
             }
+
+            if (topic.Contains("/input/move"))
+            {
+                var parts = topic.Split("/");
+
+                // [0]demo/[1]YMJ-Wildcat/[2]game/[3]1234/[4]player
+                var playerId = parts[4];
+                var action = payload;
+
+                Console.WriteLine($"Movement recieved: {playerId} -> {action}");
+
+                _gameState.PostAction(playerId, action);
+            }
         };
         client.ConnectedAsync += e =>
         {

@@ -41,15 +41,17 @@ namespace backend.Services
                 if (!_players.TryGetValue(playerId, out var state))
                     return null;
 
-                // Check if invisibility has expired
-                if (state.BoostExpiresAt.HasValue && DateTime.UtcNow >= state.BoostExpiresAt.Value)
-                {
-                    state.CurrentBoost = null;
-                    state.BoostExpiresAt = null;
-                    state.IsBoostActive = false;
-                }
+                // // Check if invisibility has expired
+                // if (state.BoostExpiresAt.HasValue && DateTime.UtcNow >= state.BoostExpiresAt.Value)
+                // {
+                //     state.CurrentBoost = null;
+                //     state.BoostExpiresAt = null;
+                //     state.IsBoostActive = false;
+                // }
 
-                return CopyState(state);
+                var copy = CopyState(state);
+                state.Action = "None";
+                return copy;
             }
         }
 
