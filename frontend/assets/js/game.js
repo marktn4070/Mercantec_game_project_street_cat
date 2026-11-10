@@ -129,12 +129,6 @@ class Player {
 	update(time, state, keys) {
 		let xSpeed = 0;
 
-		if (gameStarted === false && keys.ArrowRight){
-			startDataInterval();
-			startTimer();
-			gameStarted = true;
-		}
-
 		let animation = gameStarted ? "player" : "standStill";
 
 		if (keys.ArrowDown || remoteCrawl)

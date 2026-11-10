@@ -36,18 +36,32 @@ async function startNewGame(gameMode) {
 
     const pin = await response.text();
     console.log("Pin:", pin);
-    await waitForPlayers(pin)
+	await waitForPlayers(pin)
+	console.log("Players in lobby:", players);
 	console.log("Players in lobby:", players);
 
-    resetGame();
-    openedPopup = false;
-    gameStarted = false;
+	document.getElementById("startGameBtn").style.display = "block";
+	startGameBtn.addEventListener("click", () => {
 
-    popup.style.display = 'none';
-    openPopup.style.display = 'inline-block';
+		console.log("START GAME CLICKED");
+	
+		gameStarted = true;
+	
+		startDataInterval();
+		startTimer();
+	
+		startGameBtn.style.display = "none";
+	});
+	resetGame();
 
-    const session = ++gameSession;
-    runGame(levels, DOMDisplay, session);
+	openedPopup = false;
+
+	popup.style.display = 'none';
+	openPopup.style.display = 'inline-block';
+
+	const session = ++gameSession;
+
+	runGame(levels, DOMDisplay, session);
 
     if (lastDecisecond !== 0){
         console.log("Highscore = " + lastDecisecond);
@@ -90,4 +104,3 @@ async function waitForPlayers(pin) {
         );
     }
 }
-
