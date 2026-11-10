@@ -11,6 +11,7 @@ namespace backend.Models
         public string? CurrentBoost { get; set; }
         public DateTime? BoostExpiresAt { get; set; }
         public bool IsBoostActive { get; set; } = false;
+        public GameLobby Lobby {get; set;}
         // public bool MapReady { get; set; } = false;
     }
 }

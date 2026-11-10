@@ -15,12 +15,12 @@ namespace backend.Controllers
             _gameState = gameState;
         }
 
-        [HttpPost("postplayers/{id}")]
-        public IActionResult PostPlayersToGame(string id)
-        {
-            var state = _gameState.PostPlayersToGame(id);
-            return Ok(state);
-        }
+        // [HttpPost("postplayers/{id}")]
+        // public IActionResult PostPlayersToGame(string id)
+        // {
+        //     var state = _gameState.PostPlayersToGame(id);
+        //     return Ok(state);
+        // }
 
         [HttpGet("playerstate/{id}")]
         public IActionResult GetPlayerState(string id)
@@ -54,60 +54,24 @@ namespace backend.Controllers
 
             return Ok("Crawl accepted");
         }
-
-        // [HttpPost("score/{id}")]
-        // public IActionResult UpdateScore(int id, [FromQuery] int points)
+        // [HttpPost("boost/collect/{id}")]
+        // public IActionResult CollectBoost(string id, [FromQuery] string boostName)
         // {
-        //     var success = _gameState.UpdateScore(id, points);
+        //     var success = _gameState.CollectBoost(id, boostName);
 
         //     if (!success)
-        //         return BadRequest("Cannot update score");
+        //         return BadRequest("Cannot collect boost");
 
         //     return Ok(_gameState.GetPlayerState(id));
         // }
 
-        [HttpPost("restartGame/{id}")]
-        public IActionResult RestartGame(string id)
-        {
-            var success = _gameState.RestartGame(id);
-
-            if (success == null)
-                return NotFound("Player not found");
-
-            return Ok(_gameState.GetPlayerState(id));
-        }
-
-        [HttpPost("boost/collect/{id}")]
-        public IActionResult CollectBoost(string id, [FromQuery] string boostName)
-        {
-            var success = _gameState.CollectBoost(id, boostName);
-
-            if (!success)
-                return BadRequest("Cannot collect boost");
-
-            return Ok(_gameState.GetPlayerState(id));
-        }
-
-        [HttpPost("boost/use/{id}")]
-        public IActionResult UseBoost(string id)
-        {
-            var success = _gameState.TryUseBoost(id, out var boost);
-
-            if (!success)
-                return BadRequest("No boost available");
-
-            return Ok(_gameState.GetPlayerState(id));
-        }
-
-
-        // Set map ready
-        // [HttpPost("mapready/{id}")]
-        // public IActionResult PostMapReady(string id, [FromQuery] bool ready)
+        // [HttpPost("boost/use/{id}")]
+        // public IActionResult UseBoost(string id)
         // {
-        //     var success = _gameState.PostMapReady(id, ready);
+        //     var success = _gameState.TryUseBoost(id, out var boost);
 
         //     if (!success)
-        //         return NotFound("Player not found");
+        //         return BadRequest("No boost available");
 
         //     return Ok(_gameState.GetPlayerState(id));
         // }
@@ -141,5 +105,17 @@ namespace backend.Controllers
 
             return Ok(lobby);
         }
+        
+        [HttpPost("restartGame/{pin}")]
+        public IActionResult RestartGame(string pin)
+        {
+            var success = _gameState.RestartGame(pin);
+
+            if (!success)
+                return BadRequest("Cannot restart game");
+
+            return Ok();
+        }
+
     }
 }

@@ -55,12 +55,6 @@ public class MqttSubscriber : BackgroundService
                 }
                 Console.WriteLine($"Lobby {request.Pin} FOUND");
 
-                // if (lobby.Players.Count >= 2)
-                // {
-                //     Console.WriteLine("Lobby is full");
-                //     return;
-                // }
-
                 var existingPlayer = lobby.Players.FirstOrDefault(p => p.DeviceId == deviceId);
                 if (existingPlayer != null)
                 {
@@ -80,6 +74,7 @@ public class MqttSubscriber : BackgroundService
                     DeviceId = deviceId,
                     PlayerId = assignedPlayerId
                 });
+                _gameState.CreatePlayerState(assignedPlayerId);
                 
                 await client.PublishAsync(new MqttApplicationMessageBuilder()
                     .WithTopic($"demo/YMJ-Wildcat/{deviceId}/assigned")

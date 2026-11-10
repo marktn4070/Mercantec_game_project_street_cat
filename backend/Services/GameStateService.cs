@@ -16,7 +16,7 @@ namespace backend.Services
 
         // Should be removed, only for testing
         // Arduino connects players with game pin.
-        public GameState PostPlayersToGame(string playerId)
+        public void CreatePlayerState(string playerId)
         {
             lock (_lock)
             {
@@ -30,12 +30,10 @@ namespace backend.Services
                     IsBoostActive = false,
                     // MapReady = false
                 };
-
                 _players[playerId] = state;
-
-                return CopyState(state);
             }
         }
+
         public GameState? GetPlayerState(string playerId)
         {
             lock (_lock)
@@ -55,18 +53,6 @@ namespace backend.Services
             }
         }
 
-        // public bool PostMapReady(string playerId, bool ready)
-        // {
-        //     lock (_lock)
-        //     {
-        //         if (!_players.TryGetValue(playerId, out var state))
-        //             return false;
-
-        //         state.MapReady = ready;
-        //         return true;
-        //     }
-        // }
-
         public bool PostAction(string playerId, string action)
         {
             lock (_lock)
@@ -81,46 +67,6 @@ namespace backend.Services
 
                 state.Action = action;
                 return true;
-            }
-        }
-
-        // public bool UpdateScore(int playerId, int points)
-        // {
-        //     lock (_lock)
-        //     {
-        //         if (!_players.TryGetValue(playerId, out var state))
-        //             return false;
-
-        //         if (state.Status != "Running")
-        //             return false;
-
-        //         if (points <= 0 || points > 1000)
-        //             return false;
-
-        //         state.Score += points;
-        //         return true;
-        //     }
-        // }
-
-        public GameState RestartGame(string playerId)
-        {
-            lock (_lock)
-            {
-                if (!_players.TryGetValue(playerId, out var state))
-                    return null;
-
-                new GameState
-                {
-                    PlayerId = playerId,
-                    Status = state.Status = "Idle",
-                    Action = state.Action = "None",
-                    CurrentBoost = null,
-                    //BoostExpiresAt = null,
-                    IsBoostActive = false
-                };
-
-                _players[playerId] = state;
-                return CopyState(state);
             }
         }
 
@@ -174,30 +120,6 @@ namespace backend.Services
                 return true;
             }
         }
-
-        // public void InitializePlayers()
-        // {
-        //     lock (_lock)
-        //     {
-        //         if (!_players.ContainsKey($"player{"1" || "2"}"))
-        //         {
-        //             _players[1] = new GameState
-        //             {
-        //                 PlayerId = 1,
-        //                 Status = "Idle"
-        //             };
-        //         }
-
-        //         if (!_players.ContainsKey(2))
-        //         {
-        //             _players[2] = new GameState
-        //             {
-        //                 PlayerId = 2,
-        //                 Status = "Idle"
-        //             };
-        //         }
-        //     }
-        // }
 
         public List<GameState> GetAllPlayerStates()
         {
@@ -253,8 +175,33 @@ namespace backend.Services
             }
         }
 
+        public bool RestartGame(string gamePin)
+        {
+            var lobby = _lobbies.FirstOrDefault(l => l.Pin == gamePin);
+
+            if (lobby == null)
+                return false;
+            Console.WriteLine($"Lobby found: {lobby.Pin}");
+
+            foreach (var player in lobby.Players)
+            {
+                Console.WriteLine($"Player: {player.PlayerId}");
+                if (_players.TryGetValue(player.PlayerId, out var state))
+                {
+                    Console.WriteLine($"Status: {state.Status}");
+                    state.Status = "Running";
+                    state.Action = "None";
+                    state.CurrentBoost = null;
+                    state.BoostExpiresAt = null;
+                    state.IsBoostActive = false;
+                }
+            }
+            return true;
+        }
+
         private GameState CopyState(GameState state)
         {
+            Console.WriteLine("Copying new game state...");
             return new GameState
             {
                 PlayerId = state.PlayerId,
@@ -263,7 +210,7 @@ namespace backend.Services
                 CurrentBoost = state.CurrentBoost,
                 BoostExpiresAt = state.BoostExpiresAt,
                 IsBoostActive = state.IsBoostActive,
-                // MapReady = state.MapReady,
+                Lobby = state.Lobby
             };
         }
     }
