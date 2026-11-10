@@ -5,6 +5,9 @@ const startP1 = document.getElementById('startP1');
 const startP2 = document.getElementById('startP2');
 const popup = document.getElementById('popup');
 const heading = document.getElementById('heading');
+const restartBtn = document.getElementById("restartBtn");
+const subheading = document.getElementById("subheading");
+
 heading.innerHTML = "Wild Cat";
 
 console.log("MENU FILE LOADED");
@@ -19,31 +22,45 @@ openPopup.addEventListener('click', () => {
 
 startP1.addEventListener('click', () => startNewGame(1));
 startP2.addEventListener('click', () => startNewGame(2));
-let currectGameMode;
+let currentGameMode;
+let currentPin;
+
+restartBtn.onclick = async () =>
+	{
+		const success =
+			await restartGame(currentPin);
+	
+		if (!success)
+			return;
+	
+		location.reload();
+	};
 
 console.log("startP1 =", startP1);
 console.log("startP2 =", startP2);
 
 async function startNewGame(gameMode) {
+	resetGame();
 	console.log("START NEW GAME", gameMode);
-	currectGameMode = gameMode;
+	currentGameMode = gameMode;
 
-	if (gameStarted) return;
 	const response = await fetch(
 		`${API_URL}createlobby?gameMode=${gameMode}`,
 		{
 			method: "POST"
 		}
 	);
-
+	
 	const pin = await response.text();
+	currentPin = pin;
 	console.log("Pin:", pin);
-	await waitForPlayers(pin)
+	await waitForPlayers(pin);
+
 	console.log("Players in lobby:", players);
 	console.log("Players in lobby:", players);
 
 	document.getElementById("startGameBtn").style.display = "block";
-	startGameBtn.addEventListener("click", () => {
+	startGameBtn.onclick = () => {
 
 		console.log("START GAME CLICKED");
 
@@ -54,7 +71,7 @@ async function startNewGame(gameMode) {
 
 		startGameBtn.style.display = "none";
 		const session = ++gameSession;
-		if (currectGameMode === 1) {
+		if (currentGameMode === 1) {
 
 			document.getElementById(
 				"singleplayer-container"
@@ -88,13 +105,15 @@ async function startNewGame(gameMode) {
 				session
 			);
 		}
-	});
-	resetGame();
-
+	};
 	openedPopup = false;
 
 	popup.style.display = 'none';
 	openPopup.style.display = 'inline-block';
+
+	restartBtn.style.display = "none";
+	startP1.style.display ="inline-block";
+	startP2.style.display ="inline-block";
 
 	if (lastDecisecond !== 0) {
 		console.log("Highscore = " + lastDecisecond);

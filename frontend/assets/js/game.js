@@ -9,6 +9,9 @@ let decisecond = 0;
 let lastDecisecond = 0;
 let gameSession = 0;
 let playerMode = "";
+const restartBtn = document.getElementById("restartBtn");
+
+const subheading = document.getElementById("subheading");
 
 // let remoteInputs = {
 //     player1: {
@@ -246,12 +249,24 @@ class Lava {
     }
     collide(state) {
         stopCurrentGame();
-
+    
         popup.style.display = 'flex';
         openPopup.style.display = 'none';
+    
         heading.innerHTML = "Game Over";
-        
-        return new State(state.level, state.actors, "lost")
+    
+        subheading.innerHTML = "Score: " +String(lastDecisecond).padStart(5, "0");
+    
+        startP1.style.display = "none";
+        startP2.style.display = "none";
+    
+        restartBtn.style.display = "inline-block";
+    
+        return new State(
+            state.level,
+            state.actors,
+            "lost"
+        );
     }
 }
 
@@ -439,10 +454,7 @@ async function runGame(plans, Display, session, parentElement) {
     console.log("Game is over!")
 }
 
-async function runMultiplayerGame(
-    plans,
-    session
-) {
+async function runMultiplayerGame(plans, session) {
     const level =
         new Level(plans[0]);
 

@@ -239,7 +239,6 @@ namespace backend.Services
 
         private GameState CopyState(GameState state)
         {
-            Console.WriteLine("Copying new game state...");
             return new GameState
             {
                 PlayerId = state.PlayerId,

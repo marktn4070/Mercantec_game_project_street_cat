@@ -162,3 +162,21 @@ async function getLobby(pin) {
 
     return true;
 }
+
+async function restartGame(pin)
+{
+    const response = await fetch(
+        `${API_URL}restartGame/${pin}`,
+        {
+            method: "POST"
+        }
+    );
+
+    if (!response.ok)
+    {
+        console.error("Could not restart game");
+        return false;
+    }
+
+    return true;
+}
