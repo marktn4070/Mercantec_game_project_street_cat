@@ -12,6 +12,10 @@ let lastDecisecond = 0;
 let gameSession = 0;
 let playerMode = "";
 
+let remoteJump = false;
+let remoteCrawl = false;
+
+//Call restartgame
 function resetGame() {
 	gotBoost = false;
 	boostRequestInProgress = false;
@@ -134,16 +138,14 @@ class Player {
 
 		let animation = gameStarted ? "player" : "standStill";
 
-		if (keys.ArrowDown) animation = "crawl";
+		if (keys.ArrowDown || remoteCrawl)
+            animation = "crawl";
 
 		if (playerMode === "Invisibility") {
 			animation += " Invisibility";
 		}else{
 			animation = animation;
 		}
-
-
-
 
 		if (gameStarted) xSpeed = 7;
 
@@ -160,24 +162,14 @@ class Player {
             }
         }
 
-
-        // if (keys.ArrowLeft) xSpeed -= 7;
-        // if (keys.ArrowRight) gameStarted = true;
-
-        // const element = document.querySelector(".player");
-
-        // if (gameStarted === true) {
-        //     xSpeed += 7;
-        //     // element.classList.remove("standStill");
-        // } else {
-        //     // element.classList.add("standStill");
-        // }
-
         let normalSize = new Vec(.8, 1);
         let crouchSize = new Vec(.8, .75);
 
         let pos = this.pos;
-        let size = keys.ArrowDown ? crouchSize : normalSize;
+        let size =
+            (keys.ArrowDown || remoteCrawl)
+                ? crouchSize
+                : normalSize;
 
         if (!keys.ArrowDown && this.size.y < normalSize.y) {
             let standingPos = pos.plus(
@@ -202,12 +194,14 @@ class Player {
 
         if (!state.level.touches(movedY, size, "wall")) {
             pos = movedY;
-        } else if (keys.ArrowUp && ySpeed > 0) {
+        } else if ((keys.ArrowUp || remoteJump) && ySpeed > 0) {
             ySpeed = -17;
+            remoteJump = false;
         } else {
             ySpeed = 0;
         }
 
+        remoteCrawl = false
 		return new Player(
 			pos,
 			new Vec(xSpeed, ySpeed),

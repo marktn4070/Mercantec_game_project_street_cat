@@ -15,27 +15,43 @@ openPopup.addEventListener('click', () => {
 	heading.innerHTML = "Game Over";
 });
 
-startP1.addEventListener('click', startNewGame);
-startP2.addEventListener('click', startNewGame);
+startP1.addEventListener('click', () => startNewGame(1));
+startP2.addEventListener('click', () => startNewGame(2));
 
-function startNewGame() {
-	if (gameStarted) return;
+async function startNewGame(gameMode) {
 
-	resetGame();
-	openedPopup = false;
-	gameStarted = false;
+    if (gameStarted) return;
+    const response = await fetch(
+        `${API_URL}createlobby?gameMode=${gameMode}`,
+        {
+            method: "POST"
+        }
+    );
 
-	popup.style.display = 'none';
-	openPopup.style.display = 'inline-block';
+    const pin = await response.text();
+    console.log("Pin:", pin);
+    await getLobby(pin);
+	console.log("Players in lobby:", players);
+
+    resetGame();
+    openedPopup = false;
+    gameStarted = false;
+
+    popup.style.display = 'none';
+    openPopup.style.display = 'inline-block';
 
     const session = ++gameSession;
+    runGame(levels, DOMDisplay, session);
 
-	runGame(levels, DOMDisplay, session);
+    if (lastDecisecond !== 0){
+        console.log("Highscore = " + lastDecisecond);
 
-	if (lastDecisecond !== 0){
-		console.log("Highscore = " + lastDecisecond)
-		const lastHighscore = document.getElementById('lastHighscore');
-		lastHighscore.innerHTML = "Highscore = " + String(lastDecisecond).padStart(5, "0");
-	}
+        const lastHighscore =
+            document.getElementById('lastHighscore');
+
+        lastHighscore.innerHTML =
+            "Highscore = " +
+            String(lastDecisecond).padStart(5, "0");
+    }
 }
 
