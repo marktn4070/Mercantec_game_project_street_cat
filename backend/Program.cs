@@ -23,6 +23,17 @@ builder.Services.AddControllers();
 //    });
 //});
 
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("Frontend", policy =>
+	{
+		policy
+			.AllowAnyOrigin()
+			.AllowAnyHeader()
+			.AllowAnyMethod();
+	});
+});
+
 // Session State
 builder.Services.AddDistributedMemoryCache();
 
