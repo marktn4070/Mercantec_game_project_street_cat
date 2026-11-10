@@ -14,7 +14,6 @@ function replaceAt(str, replace, amount = 1) {
  }
  return str;
 }
-function createLevel() {
  let air = ".".repeat(mapLength);
  let lvlPart1 = air + "\n" + air + "\n";
  let lvlPart2 = replaceAt(air, "=", 5); // bird (right + left)
@@ -27,5 +26,3 @@ function createLevel() {
  let lvl_1 = lvlPart1 + lvlPart2 + "\n" + lvlPart3 + "\n" + lvlPart4;
 
  console.log(lvl_1);
- }
- createLevel();
