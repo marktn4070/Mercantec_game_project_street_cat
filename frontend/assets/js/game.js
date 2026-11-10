@@ -10,7 +10,7 @@ let getDataInterval = null;
 let decisecond = 0;
 let lastDecisecond = 0;
 let gameSession = 0;
-
+let playerMode = "playing";
 
 function resetGame() {
 	gotBoost = false;
@@ -19,6 +19,7 @@ function resetGame() {
 	leftKeyWasDown = false;
 	gameStarted = false;
 	decisecond = 0;
+	playerMode = "playing";
 }
 
 function stopCurrentGame() {
@@ -29,14 +30,11 @@ function stopCurrentGame() {
 	if (timerInterval !== null) stopTimer();
 	if (getDataInterval !== null) stopDataInterval();
 
-
 	if (decisecond > lastDecisecond){
 		lastDecisecond = decisecond;
 	}
-
 	resetGame();
 }
-
 
 class Vec {
     constructor(x, y) {
@@ -87,7 +85,7 @@ class State {
         this.status = status
     }
     static start(level) {
-        return new State(level, level.startActors, "playing")
+        return new State(level, level.startActors, playerMode)
     }
     get player() {
         return this.actors.find(a => a.type == "player")
@@ -95,7 +93,7 @@ class State {
     update(time, keys) {
         let actors = this.actors.map(actor => actor.update(time, this, keys));
         let state = new State(this.level, actors, this.status);
-        if (state.status != "playing") return state;
+        if (state.status != playerMode) return state;
         let player = state.player;
         if (this.level.touches(player.pos, player.size, "lava")) return new State(this.level, actors, "lost");
         for (let actor of actors)
@@ -103,6 +101,7 @@ class State {
         return state
     }
 }
+
 class Player {
     constructor(pos, speed, size = new Vec(.8, 1), animation = "standStill") {
         this.pos = pos;
@@ -136,6 +135,14 @@ class Player {
 		let animation = gameStarted ? "player" : "standStill";
 
 		if (keys.ArrowDown) animation = "crawl";
+
+		if (playerMode === "bonus") {
+			animation += " bonus";
+		}else{
+			animation = animation;
+		}
+
+
 
 
 		if (gameStarted) xSpeed = 7;
@@ -238,6 +245,7 @@ class Lava {
         return new State(state.level, state.actors, "lost")
     }
 }
+
 Lava.prototype.size = new Vec(1, 1);
 class Coin {
     constructor(pos, basePos, wobble) {
@@ -258,7 +266,12 @@ class Coin {
     }
     collide(state) {
         let actors = state.actors.filter(a => a != this);
-        return new State(state.level, actors, actors.some(a => a.type == "coin") ? state.status : "won")
+		postBoostName("Invisibility");
+		playerMode = "bonus";
+		///////
+        return new State(state.level, actors, "bonus")
+        // return new State(state.level, actors, state.status)
+        // return new State(state.level, actors, actors.some(a => a.type == "coin") ? state.status : "won")
     }
 }
 Coin.prototype.size = new Vec(.6, .6);
@@ -296,9 +309,10 @@ function drawActors(actors) {
     return elt("div", {}, ...actors.map(actor => {
         let actorClass = `actor ${actor.type}`;
 
-        if (actor.type === "player") {
-            actorClass += ` ${actor.animation}`;
-        }
+		if (actor.type === "player") {
+			actorClass += ` ${actor.animation}`;
+		}
+
 		let rect = elt("div", {
 			class: actorClass
 		});
@@ -309,6 +323,7 @@ function drawActors(actors) {
         return rect
     }))
 }
+
 class DOMDisplay {
     constructor(parent, level) {
         this.dom = elt("div", {
@@ -386,7 +401,7 @@ function runLevel(level, Display, session) {
 
         display.syncState(state);
 
-        if (state.status == "playing") return true;
+        if (state.status == playerMode) return true;
 
         if (ending > 0) {
             ending -= time;
@@ -408,7 +423,7 @@ async function runGame(plans, Display, session) {
 			console.log("Player dead!")
 			return;
 		}
-        if (result === "won") level++;
+        // if (result === "won") level++;
     }
 	resetGame();
     console.log("Game is over!")

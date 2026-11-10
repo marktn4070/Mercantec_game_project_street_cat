@@ -32,10 +32,8 @@ function startNewGame() {
 
 	runGame(levels, DOMDisplay, session);
 
-		console.log("Highscore = " + lastDecisecond)
-
-
 	if (lastDecisecond !== 0){
+		console.log("Highscore = " + lastDecisecond)
 		const lastHighscore = document.getElementById('lastHighscore');
 		lastHighscore.innerHTML = "Highscore = " + String(lastDecisecond).padStart(5, "0");
 	}
