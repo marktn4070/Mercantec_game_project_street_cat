@@ -41,6 +41,10 @@ builder.Services.AddSingleton<GameStateService>();
 builder.Services.AddHostedService<MqttSubscriber>();
 
 builder.Services.AddOpenApi();
+builder.Logging.AddFilter(
+    "Microsoft.AspNetCore",
+    LogLevel.Error
+);
 
 var app = builder.Build();
 

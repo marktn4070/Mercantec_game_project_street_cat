@@ -54,10 +54,12 @@ public class MqttSubscriber : BackgroundService
                     return;
                 }
                 Console.WriteLine($"Lobby {request.Pin} FOUND");
+                Console.WriteLine($"[JOIN] Current players: " + $"{lobby.Players.Count}/{lobby.MaxPlayers}");
 
                 var existingPlayer = lobby.Players.FirstOrDefault(p => p.DeviceId == deviceId);
                 if (existingPlayer != null)
                 {
+                    Console.WriteLine($"[JOIN] Device already registered. " + $"Device={deviceId} " + $"Player={existingPlayer.PlayerId}");
                     await client.PublishAsync(
                         new MqttApplicationMessageBuilder()
                             .WithTopic($"demo/YMJ-Wildcat/{deviceId}/assigned")
@@ -67,14 +69,10 @@ public class MqttSubscriber : BackgroundService
 
                     return;
                 }
-                
+
                 if (lobby.Players.Count >= lobby.MaxPlayers)
                 {
-                    Console.WriteLine(
-                        $"Lobby {lobby.Pin} is full. " +
-                        $"Players: {lobby.Players.Count}/{lobby.MaxPlayers}"
-                    );
-
+                    Console.WriteLine($"[JOIN REJECTED] Lobby full. " + $"Pin={lobby.Pin} " + $"Players={lobby.Players.Count}/{lobby.MaxPlayers} " + $"Device={deviceId}");
                     return;
                 }
                 var assignedPlayerId = $"player{lobby.Players.Count + 1}";
@@ -90,6 +88,7 @@ public class MqttSubscriber : BackgroundService
                     .WithPayload(assignedPlayerId)
                     .Build(), stoppingToken);
                 Console.WriteLine($"Assigned {assignedPlayerId} to {deviceId}");
+                Console.WriteLine($"[JOIN SUCCESS] " + $"Device={deviceId} " + $"Assigned={assignedPlayerId} " + $"Players={lobby.Players.Count}/{lobby.MaxPlayers}");
             }
 
             if (topic.Contains("/input/move"))
