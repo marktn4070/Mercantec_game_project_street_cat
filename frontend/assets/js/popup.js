@@ -21,7 +21,6 @@ startP2.addEventListener('click', () => startNewGame(2));
 async function startNewGame(gameMode) {
 
     if (gameStarted) return;
-
     const response = await fetch(
         `${API_URL}createlobby?gameMode=${gameMode}`,
         {
@@ -30,10 +29,9 @@ async function startNewGame(gameMode) {
     );
 
     const pin = await response.text();
-
     console.log("Pin:", pin);
-
     await getLobby(pin);
+	console.log("Players in lobby:", players);
 
     resetGame();
     openedPopup = false;
@@ -43,7 +41,6 @@ async function startNewGame(gameMode) {
     openPopup.style.display = 'inline-block';
 
     const session = ++gameSession;
-
     runGame(levels, DOMDisplay, session);
 
     if (lastDecisecond !== 0){

@@ -3,9 +3,7 @@ const API_URL = "https://wildcat.mercantec.tech/api/game/";
 
 let nextPlayerId = 1;
 
-createData(nextPlayerId);
-
-
+// createData(nextPlayerId);
 // async function createData(id) {
 //     try {
 //         const response = await fetch(
@@ -54,7 +52,10 @@ async function getData() {
             }
 
             const data = await response.json();
-
+            console.log(
+                `${player.playerId}: ${data.action}`
+            );
+            
             if (data.action === "Jump") {
                 remoteJump = true;
             }
@@ -93,7 +94,6 @@ function stopDataInterval() {
 		console.log("Data interval stopped");
 	}
 }
-startDataInterval();
 
 let boostActive = false;
 
