@@ -34,14 +34,17 @@ async function getData() {
             );
 
             if (data.action === "Jump") {
+                console.log("REMOTE JUMP");
                 remoteJump = true;
             }
-
+            
             if (data.action === "Crawl") {
+                console.log("REMOTE CRAWL");
                 remoteCrawl = true;
             }
-
+            
             if (data.action === "Stand") {
+                console.log("REMOTE STAND");
                 remoteCrawl = false;
             }
         }

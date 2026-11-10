@@ -188,7 +188,12 @@ class Player {
         if (!state.level.touches(movedY, size, "wall")) {
             pos = movedY;
         } else if ((keys.ArrowUp || remoteJump) && ySpeed > 0) {
-            ySpeed = -17;
+            console.log(
+                "JUMP TRIGGERED",
+                "remoteJump =", remoteJump,
+                "ArrowUp =", keys.ArrowUp
+            );
+            ySpeed = -12;
             remoteJump = false;
         } else {
             ySpeed = 0;
