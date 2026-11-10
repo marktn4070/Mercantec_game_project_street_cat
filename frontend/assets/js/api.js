@@ -180,3 +180,13 @@ async function restartGame(pin)
 
     return true;
 }
+
+async function closeLobby(pin)
+{
+    await fetch(
+        `${API_URL}closeLobby/${pin}`,
+        {
+            method: "POST"
+        }
+    );
+}

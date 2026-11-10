@@ -35,6 +35,8 @@ function resetGame() {
 	gameStarted = false;
 	decisecond = 0;
 	playerMode = "";
+    remoteJump = false;
+    remoteCrawl = false;
 }
 
 function stopCurrentGame() {

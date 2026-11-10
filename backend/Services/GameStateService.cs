@@ -237,6 +237,35 @@ namespace backend.Services
             return true;
         }
 
+        public List<string> CloseLobby(string pin)
+        {
+            var lobby =
+                _lobbies.FirstOrDefault(
+                    l => l.Pin == pin
+                );
+
+            if (lobby == null)
+                return [];
+
+            var deviceIds =
+                lobby.Players
+                     .Select(p => p.DeviceId)
+                     .ToList();
+
+            foreach (var player in lobby.Players)
+            {
+                _players.Remove(player.PlayerId);
+            }
+
+            _lobbies.Remove(lobby);
+
+            Console.WriteLine(
+                $"[LOBBY CLOSED] {pin}"
+            );
+
+            return deviceIds;
+        }
+
         private GameState CopyState(GameState state)
         {
             return new GameState
@@ -250,5 +279,7 @@ namespace backend.Services
                 Lobby = state.Lobby
             };
         }
+
+      
     }
 }

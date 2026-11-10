@@ -24,9 +24,30 @@ restartBtn.onclick = async () =>
 		if (!success)
 			return;
 	
-		location.reload();
+		popup.style.display = "none";
+	
+		restartBtn.style.display = "none";
+	
+		openedPopup = false;
+	
+		resetGame();
+	
+		gameStarted = true;
+	
+		startDataInterval();
+		startTimer();
+	
+		const session = ++gameSession;
+	
+		runGame(
+			levels,
+			DOMDisplay,
+			session,
+			document.getElementById(
+				"singleplayer-container"
+			)
+		);
 	};
-
 console.log("startP1 =", startP1);
 console.log("startP2 =", startP2);
 
@@ -116,6 +137,20 @@ async function startNewGame(gameMode) {
 			String(lastDecisecond).padStart(5, "0");
 	}
 }
+
+window.addEventListener(
+    "beforeunload",
+    () => {
+
+        if (!currentPin)
+            return;
+
+		//Sendbeacon is the best choice ofr browser refrhes
+        navigator.sendBeacon(
+            `${API_URL}closeLobby/${currentPin}`
+        );
+    }
+);
 
 async function waitForPlayers(pin) {
 

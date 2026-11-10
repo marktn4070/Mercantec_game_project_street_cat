@@ -96,5 +96,12 @@ namespace backend.Controllers
             return Ok();
         }
 
+        [HttpPost("closeLobby/{pin}")]
+        public IActionResult CloseLobby(string pin)
+        {
+            _gameState.CloseLobby(pin);
+
+            return Ok();
+        }
     }
 }
