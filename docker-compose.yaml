@@ -11,6 +11,16 @@ services:
       - wildcat-backend
     networks:
       - dokploy-network
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: dokploy-network
+      traefik.http.routers.wildcat-web.rule: "Host(`${WILDCAT_FRONTEND_HOST:-wildcat.mercantec.tech}`)"
+      traefik.http.routers.wildcat-web.entrypoints: web
+      traefik.http.routers.wildcat-web.service: wildcat-web
+      traefik.http.routers.wildcat-api.rule: "Host(`${WILDCAT_API_HOST:-api-wildcat.mercantec.tech}`) && PathPrefix(`/api/`)"
+      traefik.http.routers.wildcat-api.entrypoints: web
+      traefik.http.routers.wildcat-api.service: wildcat-web
+      traefik.http.services.wildcat-web.loadbalancer.server.port: "80"
     restart: unless-stopped
 
   wildcat-backend:
