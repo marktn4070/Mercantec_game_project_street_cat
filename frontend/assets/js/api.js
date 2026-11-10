@@ -32,7 +32,7 @@ async function getData() {
             console.log(
                 `${player.playerId}: ${data.action}`
             );
-            
+
             if (data.action === "Jump") {
                 remoteJump = true;
             }
@@ -40,6 +40,10 @@ async function getData() {
             if (data.action === "Crawl") {
                 remoteCrawl = true;
             }
+
+            // if (data.action === "Stand") {
+            //     remoteCrawl = false;
+            // }
         }
         return true;
     } catch (error) {

@@ -88,6 +88,7 @@ namespace backend.Services
 
                 if (action != "Jump" &&
                     action != "Crawl" &&
+                    action != "Stand" &&
                     action != "None")
                     return false;
 
@@ -97,7 +98,10 @@ namespace backend.Services
                     return true;
                 }
 
-                state.Action = action;
+                if (action != "None")
+                {
+                    state.Action = action;
+                }
 
                 Console.WriteLine($"Stored {action} for {playerId}");
 

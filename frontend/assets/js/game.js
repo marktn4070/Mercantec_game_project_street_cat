@@ -193,8 +193,7 @@ class Player {
         } else {
             ySpeed = 0;
         }
-
-        remoteCrawl = false
+        
 		return new Player(
 			pos,
 			new Vec(xSpeed, ySpeed),
