@@ -67,7 +67,16 @@ public class MqttSubscriber : BackgroundService
 
                     return;
                 }
+                
+                if (lobby.Players.Count >= lobby.MaxPlayers)
+                {
+                    Console.WriteLine(
+                        $"Lobby {lobby.Pin} is full. " +
+                        $"Players: {lobby.Players.Count}/{lobby.MaxPlayers}"
+                    );
 
+                    return;
+                }
                 var assignedPlayerId = $"player{lobby.Players.Count + 1}";
                 lobby.Players.Add(new LobbyPlayer
                 {

@@ -173,15 +173,17 @@ namespace backend.Services
         public string PostCreateLobby(int gameMode)
         {
             lock (_lock)
-            {                
+            {
                 var pin = "";
                 if (gameMode == 1)
                 {
                     //var pin = Random.Shared.Next(1000, 9999).ToString();
                     pin = "1234";
+                    _lobbies.RemoveAll(l => l.Pin == pin);
                     var lobby = new GameLobby
                     {
-                        Pin = pin
+                        Pin = pin,
+                        MaxPlayers = 1
                     };
 
                     _lobbies.Add(lobby);
@@ -190,9 +192,11 @@ namespace backend.Services
                 {
                     //var pin = Random.Shared.Next(1000, 9999).ToString();
                     pin = "5678";
+                    _lobbies.RemoveAll(l => l.Pin == pin);
                     var lobby = new GameLobby
                     {
-                        Pin = pin
+                        Pin = pin,
+                        MaxPlayers = 2
                     };
 
                     _lobbies.Add(lobby);
