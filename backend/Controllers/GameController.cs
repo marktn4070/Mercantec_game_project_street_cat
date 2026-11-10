@@ -26,28 +26,6 @@ namespace backend.Controllers
             return Ok(state);
         }
 
-        [HttpPost("jump/{id}")]
-        public IActionResult Jump(string id)
-        {
-            var success = _gameState.PostAction(id, "Jump");
-
-            if (!success)
-                return BadRequest("Player is not running");
-
-            return Ok("Jump accepted");
-        }
-
-        [HttpPost("crawl/{id}")]
-        public IActionResult Crawl(string id)
-        {
-            var success = _gameState.PostAction(id, "Crawl");
-
-            if (!success)
-                return BadRequest("Player is not running");
-
-            return Ok("Crawl accepted");
-        }
-        
         [HttpPost("boost/collect/{id}")]
         public IActionResult CollectBoost(string id, [FromQuery] string boostName)
         {
