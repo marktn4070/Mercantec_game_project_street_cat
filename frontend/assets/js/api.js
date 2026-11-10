@@ -1,5 +1,5 @@
 // api
-const API_URL = "https://wildcat.mercantec.tech";
+const API_URL = "https://wildcat.mercantec.tech/";
 console.log("API FILE LOADED");
 
 let nextPlayerId = 1;
