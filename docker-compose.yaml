@@ -1,6 +1,5 @@
 networks:
-  default:
-    name: dokploy-network
+  dokploy-network:
     external: true
 
 services:
@@ -8,28 +7,17 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: wildcatfrontend
     depends_on:
       - backend
-    labels:
-      - traefik.enable=true #Expose container to internet
-      - traefik.docker.network=dokploy-network 
-      - traefik.http.routers.WildCat.rule=Host(`http://wildcat-wildcatgame-q3tozl-fff808-185-22-75-2.sslip.io/`) # Send traffic to this container, whenever somebody visits our website
-      - traefik.http.routers.WildCat.entrypoints=web # Listen on web entrypoint
-      - traefik.http.services.WildCat.loadbalancer.server.port=80 # frontend runs on port 80
+    networks:
+      - default
+      - dokploy-network
     restart: unless-stopped
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: apiWildcat
-    labels:
-    - traefik.enable=true
-    - traefik.docker.network=dokploy-network
-    - traefik.http.routers.WildCat-api.rule=Host(`api-WildCat.mercantec.tech`)
-    - traefik.http.routers.WildCat-api.entrypoints=web
-    - traefik.http.services.WildCat-api.loadbalancer.server.port=8080 # frontend runs on port 8080
     restart: unless-stopped
     environment:
       ASPNETCORE_ENVIRONMENT: Production

@@ -8,6 +8,8 @@ RUN dotnet publish -c Release -o /app/publish
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 
+ENV DOTNET_hostBuilder__reloadConfigOnChange=false
+
 COPY --from=build /app/publish .
 
 EXPOSE 8080
