@@ -1,5 +1,6 @@
 
-let mapLength = 100;
+let mapLength = 70;
+let BetweenObjLength = 30;
 
 function replaceAt(str, replace, amount = 1) {
  for (let i = 0; i < amount; i++) {
@@ -14,14 +15,21 @@ function replaceAt(str, replace, amount = 1) {
  }
  return str;
 }
- let air = ".".repeat(mapLength);
- let lvlPart1 = air + "\n" + air + "\n";
- let lvlPart2 = replaceAt(air, "=", 5); // bird (right + left)
- let lvlPart3 = replaceAt(air, "@"); // Character
- lvlPart3 = replaceAt(lvlPart3, "|", 2); // bird (up + down)
- lvlPart3 = replaceAt(lvlPart3, "o", 1);// Coin
 
- let lvlPart4 = "#".repeat(mapLength);
+let air = ".".repeat(mapLength);
+let airBetweenObj = ".".repeat(BetweenObjLength);
+let lvlPart1 = airBetweenObj + air + "\n" + airBetweenObj + air + "\n";
+let lvlPart2 = airBetweenObj + replaceAt(air, "=", 5); // bird (right + left)
+airBetweenObj = ".".repeat(BetweenObjLength / 3);
+
+
+
+ let lvlPart3 = airBetweenObj + replaceAt(air, "|", 2); // bird (up + down)
+ lvlPart3 = airBetweenObj + replaceAt(lvlPart3, "o", 1); // Coin
+ lvlPart3 = replaceAt(lvlPart3, "@") + airBetweenObj; // Character
+
+ airBetweenObj = "#".repeat(BetweenObjLength);
+ let lvlPart4 = airBetweenObj + "#".repeat(mapLength);
 
  let lvl_1 = lvlPart1 + lvlPart2 + "\n" + lvlPart3 + "\n" + lvlPart4;
 
