@@ -121,7 +121,8 @@ body {
 	filter: hue-rotate(-23deg);
 }
 
-.won .player {
+.won .player,
+.bonus {
 	filter: hue-rotate(20deg);
 }
 
