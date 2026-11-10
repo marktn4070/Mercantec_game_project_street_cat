@@ -51,8 +51,6 @@ async function startNewGame(gameMode) {
 		startTimer();
 	
 		startGameBtn.style.display = "none";
-		const session = ++gameSession;
-		runGame(levels, DOMDisplay, session);
 	});
 	resetGame();
 
@@ -60,6 +58,9 @@ async function startNewGame(gameMode) {
 
 	popup.style.display = 'none';
 	openPopup.style.display = 'inline-block';
+
+	const session = ++gameSession;
+    runGame(levels, DOMDisplay, session);
 
     if (lastDecisecond !== 0){
         console.log("Highscore = " + lastDecisecond);
