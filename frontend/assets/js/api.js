@@ -94,8 +94,10 @@ async function postBoostName(boostName) {
     boostRequestInProgress = true;
 
     try {
+		const playerId = players[0].playerId;
         const response = await fetch(
-            `${API_URL}boost/collect/1?boostName=${boostName}`, {
+			`${API_URL}boost/collect/${playerId}?boostName=${boostName}`,
+			{
                 method: "POST"
             }
         );
@@ -121,8 +123,9 @@ async function postBoostUse() {
     useBoostRequestInProgress = true;
 
     try {
+		const playerId = players[0].playerId;
         const response = await fetch(
-            `${API_URL}boost/use/1`, {
+            `${API_URL}boost/use/${playerId}`, {
                 method: "POST"
             }
         );
