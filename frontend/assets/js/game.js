@@ -290,13 +290,10 @@ class Coin {
         let actors = state.actors.filter(a => a != this);
     
         if (!gotBoost) {
-            postBoostName("Invisibility");
+			playerMode = "Invisibility";
+			postBoostName(playerMode);
         }
-        return new State(
-            state.level,
-            actors,
-            state.status
-        );
+		return new State(state.level, actors, state.status)
     }
 }
 Coin.prototype.size = new Vec(.6, .6);
@@ -421,6 +418,12 @@ function runLevel(level, Display, session, parentElement) {
         }
         state = state.update(time, arrowKeys);
 
+		const player = state.player;
+		
+		if (player.pos.x + player.size.x > state.level.width - 25) {
+			appendLevelChunk(state, display);
+		}
+
 		if (state.status === "lost") {
 			stopCurrentGame();
 		}
@@ -440,40 +443,89 @@ function runLevel(level, Display, session, parentElement) {
 }
 
 
-async function runGame(plans, Display, session, parentElement) {
-    for (let level = 0; level < plans.length;) {
-        let result = await runLevel(new Level(plans[level]), Display, session, parentElement);
+
+async function runGame(Display, session, parentElement) {
+	const firstLevel = new Level(createLevel(true));
+		let result = await runLevel(firstLevel, Display, session, parentElement);
 		if (result === "stopped") return;
-        if (result === "lost"){
+		if (result === "lost"){
 			console.log("Timer stoppet efter " + (decisecond / 10) + " sekunder");
 			console.log("Player dead!")
 			return;
 		}
-        // if (result === "won") level++;
-    }
-    resetGame();
-    console.log("Game is over!")
+		// if (result === "won") level++;
+	resetGame();
+	console.log("Game is over!")
 }
 
-async function runMultiplayerGame(plans, session) {
-    const level =
-        new Level(plans[0]);
+async function runMultiplayerGame(session) {
+	while (session === gameSession) {
+		const level = new Level(createLevel());
 
-    runLevel(
-        level,
-        DOMDisplay,
-        session,
-        document.getElementById(
-            "player1-container"
-        )
-    );
+		const player1Result = runLevel(
+			level,
+			DOMDisplay,
+			session,
+			document.getElementById("player1-container")
+		);
 
-    runLevel(
-        level,
-        DOMDisplay,
-        session,
-        document.getElementById(
-            "player2-container"
-        )
-    );
+		const player2Result = runLevel(
+			level,
+			DOMDisplay,
+			session,
+			document.getElementById("player2-container")
+		);
+
+		const results = await Promise.all([
+			player1Result,
+			player2Result
+		]);
+
+		if (
+			results.includes("stopped") ||
+			results.includes("lost")
+		) {
+			return;
+		}
+	}
 }
+
+function appendLevelChunk(state, display) {
+	if (addingLevel) return;
+
+	addingLevel = true;
+
+	const oldLevel = state.level;
+	const oldWidth = oldLevel.width;
+	const newChunk = new Level(createLevel(false));
+
+	for (let y = 0; y < oldLevel.height; y++) {
+		oldLevel.rows[y].push(...newChunk.rows[y]);
+	}
+
+	for (const actor of newChunk.startActors) {
+		actor.pos.x += oldWidth;
+		oldLevel.startActors.push(actor);
+		state.actors.push(actor);
+	}
+
+	oldLevel.width += newChunk.width;
+
+	// Tilføj den nye del af banen til HTML-tabellen
+	const oldGrid = display.dom.querySelector(".background");
+	const newGrid = drawGrid(newChunk);
+
+	const oldRows = oldGrid.querySelectorAll("tr");
+	const newRows = newGrid.querySelectorAll("tr");
+
+	for (let y = 0; y < oldRows.length; y++) {
+		oldRows[y].append(...Array.from(newRows[y].children));
+	}
+
+	oldGrid.style.width = `${oldLevel.width * scale}px`;
+
+	addingLevel = false;
+
+	console.log("Ny bane-del tilføjet");
+}
+

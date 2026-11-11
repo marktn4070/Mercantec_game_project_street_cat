@@ -1,5 +1,4 @@
 let openedPopup = false;
-const levels = [lvl_1];
 const startP1 = document.getElementById('startP1');
 const startP2 = document.getElementById('startP2');
 const popup = document.getElementById('popup');
@@ -40,7 +39,6 @@ restartBtn.onclick = async () =>
 		const session = ++gameSession;
 	
 		runGame(
-			levels,
 			DOMDisplay,
 			session,
 			document.getElementById(
@@ -94,7 +92,6 @@ async function startNewGame(gameMode) {
 			).style.display = "none";
 
 			runGame(
-				levels,
 				DOMDisplay,
 				session,
 				document.getElementById(
