@@ -9,6 +9,7 @@ let decisecond = 0;
 let lastDecisecond = 0;
 let gameSession = 0;
 let playerMode = "";
+let newDecisecond = 0;
 
 // let remoteInputs = {
 //     player1: {
@@ -247,13 +248,14 @@ class Lava {
         return new Lava(this.pos, this.speed.times(-1))
     }
     collide(state) {
+		newDecisecond = decisecond;
         stopCurrentGame();
     
         popup.style.display = 'flex';    
         heading.innerHTML = "Game Over";
 
-        console.log("Final score:", lastDecisecond);
-        subheading.innerHTML = "Score: " +String(lastDecisecond).padStart(5, "0");
+        console.log("Final score:", );
+        subheading.innerHTML = "Score: " +String(newDecisecond).padStart(5, "0");
     
         startP1.style.display = "none";
         startP2.style.display = "none";
