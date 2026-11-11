@@ -76,6 +76,10 @@ async function startNewGame(gameMode) {
 
 		gameStarted = true;
 
+	console.log(lastDecisecond);
+
+
+
 		startDataInterval();
 		startTimer();
 
@@ -123,16 +127,7 @@ async function startNewGame(gameMode) {
 	startP1.style.display ="inline-block";
 	startP2.style.display ="inline-block";
 
-	if (lastDecisecond !== 0) {
-		console.log("Highscore = " + lastDecisecond);
 
-		const lastHighscore =
-			document.getElementById('lastHighscore');
-
-		lastHighscore.innerHTML =
-			"Highscore = " +
-			String(lastDecisecond).padStart(5, "0");
-	}
 }
 
 window.addEventListener(

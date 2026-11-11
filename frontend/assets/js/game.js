@@ -447,6 +447,16 @@ function runLevel(level, Display, session, parentElement) {
 async function runGame(Display, session, parentElement) {
 	const firstLevel = new Level(createLevel(true));
 		let result = await runLevel(firstLevel, Display, session, parentElement);
+		if (lastDecisecond !== 0) {
+			console.log("Highscore = " + lastDecisecond);
+		
+			const lastHighscore =
+				document.getElementById('lastHighscore');
+		
+			lastHighscore.innerHTML =
+				"Highscore = " +
+				String(lastDecisecond).padStart(5, "0");
+		}
 		if (result === "stopped") return;
 		if (result === "lost"){
 			console.log("Timer stoppet efter " + (decisecond / 10) + " sekunder");
