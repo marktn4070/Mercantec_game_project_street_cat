@@ -375,7 +375,10 @@ class DOMDisplay {
 }
 
 function overlap(a, b) {
-    return a.pos.x + a.size.x > b.pos.x && a.pos.x < b.pos.x + b.size.x && a.pos.y + a.size.y > b.pos.y && a.pos.y < b.pos.y + b.size.y
+    return a.pos.x + a.size.x > b.pos.x && 
+		   a.pos.x < b.pos.x + b.size.x && 
+		   a.pos.y + a.size.y > b.pos.y && 
+		   a.pos.y < b.pos.y + b.size.y;
 }
 
 function trackKeys(keys) {
@@ -456,8 +459,7 @@ async function runGame(Display, session, parentElement) {
 				document.getElementById('lastHighscore');
 		
 			lastHighscore.innerHTML =
-				"Highscore = " +
-				String(lastDecisecond).padStart(5, "0");
+				"Highscore = " + String(lastDecisecond).padStart(5, "0");
 		}
 		if (result === "stopped") return;
 		if (result === "lost"){
